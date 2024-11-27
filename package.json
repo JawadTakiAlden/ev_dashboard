@@ -2,7 +2,11 @@
   "name": "starter-code",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://fitnessdash.houseofgeniuses.tech",
+  "homepage": "http://fitnessdash.houseofgeniuses.tech",
+  "author": {
+    "name": "jawad taki aldeen",
+    "email": "jawad.taki.alden2002@gmail.com"
+  },
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
