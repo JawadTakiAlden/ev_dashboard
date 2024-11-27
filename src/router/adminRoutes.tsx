@@ -38,6 +38,7 @@ export const adminRoutes: RouteObject = {
           children: [
             {
               path: "home",
+
               element: <Home />,
             },
             {
