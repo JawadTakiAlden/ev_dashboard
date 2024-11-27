@@ -1,9 +1,11 @@
-import React from "react";
+import React, { lazy } from "react";
 import Screen from "../../../components/Screen";
 import Grid from "@mui/material/Grid2";
 import { gridSpacing } from "../../../config";
 import StatisticCard from "../../../components/StatisticCard";
-import SigninStatstics from "./SigninStatstics";
+import Loadable from "../../../components/Loadable";
+
+const SigninStatstics = Loadable(lazy(() => import("./SigninStatstics")));
 
 const Home = () => {
   return (

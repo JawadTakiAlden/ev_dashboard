@@ -10,12 +10,12 @@ export const theme = ({ mode = "dark" }: ThemeCustomization) => {
   const themeOptions: ThemeOptions = {
     palette: {
       mode: mode,
-      primary: {
-        main: "#FF5F2D",
-      },
-      secondary: {
-        main: "#D0F81D",
-      },
+      // primary: {
+      //   main: "#FF5F2D",
+      // },
+      // secondary: {
+      //   main: "#D0F81D",
+      // },
     },
     typography: typographyOverrides,
     components: overideComponents,

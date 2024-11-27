@@ -9,16 +9,18 @@ const NavItemsRenderer = ({ items }: { items: MenuItemObject[] }) => {
   const testItems = items.map((item, i) => {
     switch (item.type) {
       case "group": {
-        return <NavGroup item={item} />;
+        return <NavGroup key={i} item={item} />;
       }
       case "item": {
-        return <NavItem item={item} />;
+        return <NavItem key={i} item={item} />;
       }
       case "coollabse": {
-        return <CollapseItem item={item} />;
+        return <CollapseItem key={i} item={item} />;
       }
       default: {
-        return <Typography>type of item {item.type} is wrong</Typography>;
+        return (
+          <Typography key={i}>type of item {item.type} is wrong</Typography>
+        );
       }
     }
   });

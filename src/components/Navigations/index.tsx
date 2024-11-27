@@ -8,7 +8,7 @@ import NavItemsRenderer from "../NavItems";
 import { MenuItemObject } from "../../menu-items";
 
 const Sidebar = ({ items = [] }: { items?: MenuItemObject[] }) => {
-  const { open, handelSwitch, handelClose, handelOpen } = useSidebar();
+  const { open, handelClose, handelOpen } = useSidebar();
   const theme = useTheme();
   const matchDonwMD = useMediaQuery(theme.breakpoints.down("lg"));
 
@@ -18,15 +18,16 @@ const Sidebar = ({ items = [] }: { items?: MenuItemObject[] }) => {
     } else {
       handelOpen();
     }
-  }, [matchDonwMD, handelClose, handelOpen]);
+  }, []);
 
   return !matchDonwMD ? (
     <Box component={"nav"}>
       <MiniDrawerStyled
+        anchor={"left"}
         variant="permanent"
         open={open}
         onClose={handelClose}
-        // ModalProps={{ keepMounted: true }}
+        ModalProps={{ keepMounted: true }}
       >
         <SidebarHeader />
         <Box
@@ -40,9 +41,10 @@ const Sidebar = ({ items = [] }: { items?: MenuItemObject[] }) => {
     </Box>
   ) : (
     <Drawer
+      anchor={"left"}
       open={open}
       variant="temporary"
-      onClose={handelSwitch}
+      onClose={handelClose}
       sx={{
         "& .MuiDrawer-paper": {
           boxSizing: "border-box",
@@ -54,13 +56,15 @@ const Sidebar = ({ items = [] }: { items?: MenuItemObject[] }) => {
         },
       }}
     >
-      <SidebarHeader />
-      <Box
-        sx={{
-          maxWidth: "100%",
-        }}
-      >
-        <NavItemsRenderer items={items} />
+      <Box role="presentation" onClick={handelClose}>
+        <SidebarHeader />
+        <Box
+          sx={{
+            maxWidth: "100%",
+          }}
+        >
+          <NavItemsRenderer items={items} />
+        </Box>
       </Box>
     </Drawer>
   );

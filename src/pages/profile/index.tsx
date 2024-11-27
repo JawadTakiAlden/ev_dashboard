@@ -17,51 +17,66 @@ import Screen from "../../components/Screen";
 import useGetGetDarkValue from "../../utils/useGetGetDarkValue";
 import LineChart from "../../components/charts/LineChart";
 import MainCard from "../../components/MainCard";
-import { WorkoutLog, workoutLogs } from "../../tables-def/workout-logs";
+import { WorkoutLog } from "../../tables-def/workout-logs";
 import SectionTitle from "../../components/SectionTitle";
+import { useState } from "react";
+import {
+  getProgressHistoryChartData,
+  userProfile,
+} from "../../tables-def/user-profile";
+import JustInViewRender from "../../components/JustInViewRender";
 
 const InformationTypography = styled(Typography)(() => ({
   fontSize: "calc(18px + 0.02vw)",
 }));
 
+const RenderRow = ({ workout }: { workout: WorkoutLog }) => {
+  const { type, workout_name, date } = workout;
+  const action = type === "join" ? "joined" : "completed";
+  const { getVlaue } = useGetGetDarkValue();
+
+  return (
+    <ListItem component="div" disablePadding>
+      <ListItemButton>
+        <ListItemText
+          sx={{
+            fontWeight: "400",
+            "& .MuiTypography-root": {
+              fontSize: "18px !important",
+            },
+            color: (theme) =>
+              getVlaue(theme.palette.grey[400], theme.palette.grey[700]),
+            "& .workout": {
+              fontWeight: "600",
+              color: "text.primary",
+            },
+            "& .date": {
+              fontWeight: "500",
+              color: getVlaue("primary.dark", "primary.light"),
+            },
+          }}
+        >
+          Player <span className="action">{action}</span> the{" "}
+          <span className="workout">"{workout_name}"</span> workout on{" "}
+          <span className="date">{date}</span>
+        </ListItemText>
+      </ListItemButton>
+    </ListItem>
+  );
+};
+
 const UserProfile = () => {
   const { getVlaue } = useGetGetDarkValue();
   const theme = useTheme();
+  const [profile] = useState(userProfile);
 
-  const RenderRow = ({ workout }: { workout: WorkoutLog }) => {
-    const { type, workout_name, date } = workout;
-    const action = type === "join" ? "joined" : "completed";
-    const { getVlaue } = useGetGetDarkValue();
+  const { catgeories, series } = getProgressHistoryChartData({
+    weightProgress: profile.progress_history,
+  });
 
-    return (
-      <ListItem component="div" disablePadding>
-        <ListItemButton>
-          <ListItemText
-            sx={{
-              fontWeight: "400",
-              "& .MuiTypography-root": {
-                fontSize: "18px !important",
-              },
-              color: (theme) =>
-                getVlaue(theme.palette.grey[400], theme.palette.grey[700]),
-              "& .workout": {
-                fontWeight: "600",
-                color: "text.primary",
-              },
-              "& .date": {
-                fontWeight: "500",
-                color: getVlaue("primary.dark", "primary.light"),
-              },
-            }}
-          >
-            Player <span className="action">{action}</span> the{" "}
-            <span className="workout">"{workout_name}"</span> workout on{" "}
-            <span className="date">{date}</span>
-          </ListItemText>
-        </ListItemButton>
-      </ListItem>
-    );
-  };
+  const barData = getProgressHistoryChartData({
+    weightProgress: profile.progress_history,
+  });
 
   return (
     <Screen title="jawad taki aldeen">
@@ -113,7 +128,7 @@ const UserProfile = () => {
                       width: "100%",
                     }}
                   >
-                    jawad taki aldeen
+                    {profile.name}
                   </Typography>
                   <Typography
                     variant="subtitle1"
@@ -128,7 +143,7 @@ const UserProfile = () => {
                         ),
                     }}
                   >
-                    jawad.taki.aldeen2002@gmail.com
+                    {profile.email}
                   </Typography>
                   <Typography
                     variant="subtitle1"
@@ -143,7 +158,7 @@ const UserProfile = () => {
                         ),
                     }}
                   >
-                    Birth Of Date : 26 Fib 2003
+                    {profile.birth_of_date}
                   </Typography>
                 </Box>
                 <Box>
@@ -161,16 +176,17 @@ const UserProfile = () => {
               <SectionTitle>Subscription Plan</SectionTitle>
               <Stack gap="10px">
                 <InformationTypography>
-                  this account belongs to gold subscription plan
+                  this account belongs to {profile.subscription.name}{" "}
+                  subscription plan
                 </InformationTypography>
                 <InformationTypography>
-                  Enrolled at : 25-12-2024
+                  Enrolled at : {profile.created_at}
                 </InformationTypography>
                 <InformationTypography>
-                  Subscriped at : 25-12-2024
+                  Subscriped at : {profile.subscription.start_date}
                 </InformationTypography>
                 <InformationTypography>
-                  Experid On : 25-12-2024
+                  Experid On : {profile.subscription.end_date}
                 </InformationTypography>
               </Stack>
             </Grid>
@@ -187,133 +203,111 @@ const UserProfile = () => {
             <Grid size={{ xs: 12, md: 6 }}>
               <MainCard border={false} sx={{ p: 1 }}>
                 <Typography variant="h4">Weigh Progress</Typography>
-                <LineChart
-                  series={[
-                    {
-                      name: "Weight",
-                      data: [20, 20, 30, 50, 90, 65, 95, 32, 95, 120, 130, 145],
-                    },
-                  ]}
-                  options={{
-                    colors: [
-                      getVlaue(
-                        theme.palette.grey[500],
-                        theme.palette.primary.main
-                      ),
-                    ],
-                    tooltip: {
-                      theme: theme.palette.mode,
-                    },
-                    grid: {
-                      borderColor: theme.palette.divider,
-                    },
-                    yaxis: {
-                      labels: {
-                        style: {
-                          colors: [theme.palette.primary.main],
-                        },
+                <JustInViewRender>
+                  <LineChart
+                    series={[
+                      {
+                        name: "Weight",
+                        data: series,
                       },
-                    },
-                    xaxis: {
-                      categories: [
-                        "Jan",
-                        "Feb",
-                        "Mar",
-                        "Apr",
-                        "May",
-                        "Jun",
-                        "Jul",
-                        "Aug",
-                        "Sep",
-                        "Oct",
-                        "Nov",
-                        "Dec",
+                    ]}
+                    options={{
+                      colors: [
+                        getVlaue(
+                          theme.palette.grey[500],
+                          theme.palette.primary.main
+                        ),
                       ],
-                      labels: {
-                        style: {
-                          colors: [
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                          ],
+                      tooltip: {
+                        theme: theme.palette.mode,
+                      },
+                      grid: {
+                        borderColor: theme.palette.divider,
+                      },
+                      yaxis: {
+                        labels: {
+                          style: {
+                            colors: [theme.palette.primary.main],
+                          },
                         },
                       },
-                    },
-                  }}
-                />
+                      xaxis: {
+                        categories: catgeories,
+                        labels: {
+                          style: {
+                            colors: [
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                            ],
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </JustInViewRender>
               </MainCard>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <MainCard border={false} sx={{ p: 1 }}>
                 <Typography variant="h4">Weigh Progress</Typography>
-                <LineChart
-                  type="bar"
-                  series={[
-                    {
-                      name: "Weight",
-                      data: [20, 20, 30, 50, 90, 65, 95, 32, 95, 120, 130, 145],
-                    },
-                  ]}
-                  options={{
-                    colors: [theme.palette.secondary.light],
-                    tooltip: {
-                      theme: theme.palette.mode,
-                    },
-                    grid: {
-                      borderColor: theme.palette.divider,
-                    },
-                    yaxis: {
-                      labels: {
-                        style: {
-                          colors: [theme.palette.primary.main],
+                <JustInViewRender>
+                  <LineChart
+                    type="bar"
+                    series={[
+                      {
+                        name: "Weight",
+                        data: barData.series,
+                      },
+                    ]}
+                    options={{
+                      colors: [theme.palette.secondary.light],
+                      tooltip: {
+                        theme: theme.palette.mode,
+                      },
+                      grid: {
+                        borderColor: theme.palette.divider,
+                      },
+                      yaxis: {
+                        labels: {
+                          style: {
+                            colors: [theme.palette.primary.main],
+                          },
                         },
                       },
-                    },
-                    xaxis: {
-                      categories: [
-                        "Jan",
-                        "Feb",
-                        "Mar",
-                        "Apr",
-                        "May",
-                        "Jun",
-                        "Jul",
-                        "Aug",
-                        "Sep",
-                        "Oct",
-                        "Nov",
-                        "Dec",
-                      ],
-                      labels: {
-                        style: {
-                          colors: [
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                            theme.palette.text.primary,
-                          ],
+                      xaxis: {
+                        categories: barData.catgeories,
+                        labels: {
+                          style: {
+                            colors: [
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                              theme.palette.text.primary,
+                            ],
+                          },
                         },
                       },
-                    },
-                  }}
-                />
+                    }}
+                  />
+                </JustInViewRender>
               </MainCard>
             </Grid>
           </Grid>
@@ -328,7 +322,7 @@ const UserProfile = () => {
               bgcolor: "background.paper",
             }}
           >
-            {workoutLogs.slice(0, 20).map((workout, i) => (
+            {profile.workout_logs.slice(0, 20).map((workout, i) => (
               <RenderRow key={i} workout={workout} />
             ))}
           </MainCard>

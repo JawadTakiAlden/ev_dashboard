@@ -4,8 +4,15 @@ import { gridSpacing } from "../../../../config";
 import MainCard from "../../../../components/MainCard";
 import SectionTitle from "../../../../components/SectionTitle";
 import FitnessSubscriptionTable from "./FitnessSubscriptionTable";
-import FitnessSubscriptionsBarAnalysis from "./FitnessSubscriptionsBarAnalysis";
-import FitnessSubscriptionsLineAnalysis from "./FitnessSubscriptionsLineAnalysis";
+import { lazy } from "react";
+import Loadable from "../../../../components/Loadable";
+
+const FitnessSubscriptionsBarAnalysis = Loadable(
+  lazy(() => import("./FitnessSubscriptionsBarAnalysis"))
+);
+const FitnessSubscriptionsLineAnalysis = Loadable(
+  lazy(() => import("./FitnessSubscriptionsLineAnalysis"))
+);
 
 const FitnessSubscriptions = () => {
   return (

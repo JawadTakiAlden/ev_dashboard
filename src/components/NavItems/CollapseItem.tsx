@@ -13,6 +13,8 @@ import { MdExpandMore } from "react-icons/md";
 const CollapseItem = ({ item }: { item: MenuItemObject }) => {
   return (
     <Accordion
+      disableGutters
+      elevation={0}
       slotProps={{ transition: { unmountOnExit: true } }}
       sx={{
         backgroundColor: "transparent",

@@ -24,6 +24,22 @@ const ThemeProvider = ({ children }: BaseProviderInterface) => {
             ":fullscreen": {
               backgroundColor: appTheme.palette.background.default,
             },
+            "*::-webkit-scrollbar": {
+              width: "10px", // Width of the scrollbar
+              height: "10px", // Height of the scrollbar for horizontal scrolling
+            },
+            "*::-webkit-scrollbar-track": {
+              backgroundColor: "#f0f0f0", // Track color
+              borderRadius: "10px",
+            },
+            "*::-webkit-scrollbar-thumb": {
+              backgroundColor: "#888", // Scrollbar thumb color
+              borderRadius: "10px",
+              border: "2px solid #f0f0f0", // Optional: Add space around thumb
+            },
+            "*::-webkit-scrollbar-thumb:hover": {
+              backgroundColor: "#555", // Scrollbar thumb hover color
+            },
           }}
         />
         {children}

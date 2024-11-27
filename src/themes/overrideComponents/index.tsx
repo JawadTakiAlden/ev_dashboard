@@ -12,6 +12,7 @@ export const overideComponents: Components<Omit<Theme, "components">> = {
   MuiFormControl: {
     defaultProps: {
       margin: "dense",
+      fullWidth: true,
     },
   },
 
