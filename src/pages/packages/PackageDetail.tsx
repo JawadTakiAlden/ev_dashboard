@@ -4,6 +4,7 @@ import Grid from "@mui/material/Grid2";
 import { gridSpacing } from "../../config";
 import PackageForm from "./components/packageForm";
 import Pricing from "./components/Pricing";
+import Survey from "./components/Survey";
 
 const PackageDetail = () => {
   return (
@@ -24,6 +25,9 @@ const PackageDetail = () => {
         </Grid>
         <Grid size={12}>
           <Pricing />
+        </Grid>
+        <Grid size={12}>
+          <Survey />
         </Grid>
       </Grid>
     </Box>

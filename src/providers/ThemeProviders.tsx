@@ -1,6 +1,5 @@
 import {
   ThemeProvider as BaseThemeProvider,
-  Box,
   CssBaseline,
   GlobalStyles,
   StyledEngineProvider,
@@ -40,23 +39,6 @@ const ThemeProvider = ({ children }: BaseProviderInterface) => {
             },
             "*::-webkit-scrollbar-thumb:hover": {
               backgroundColor: "#555", // Scrollbar thumb hover color
-            },
-          }}
-        />
-        <Box
-          className={mode === "light" ? "light" : "dark"}
-          sx={{
-            position: "fixed",
-            top: 0,
-            right: 0,
-            width: "100%",
-            height: "100vh",
-            backgroundColor: mode === "light" ? "#fff" : "#000",
-            zIndex: -2,
-            clipPath: "circle(0% at 50% 50%)",
-            transition: "1s ease-out",
-            "&.dark": {
-              clipPath: "circle(150% at 50% 50%)",
             },
           }}
         />

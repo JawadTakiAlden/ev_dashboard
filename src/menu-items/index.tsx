@@ -3,12 +3,9 @@ import { MdHome, MdPeopleOutline } from "react-icons/md";
 import { GiMeal } from "react-icons/gi";
 import { MdOutlinePayments } from "react-icons/md";
 import { CgGym } from "react-icons/cg";
-import { FcSurvey } from "react-icons/fc";
 import { GiHotMeal } from "react-icons/gi";
 import { IoCalendarNumberOutline } from "react-icons/io5";
 import { CgExtensionAdd } from "react-icons/cg";
-
-import { FaQuestionCircle } from "react-icons/fa";
 import { PiFlagBannerFold } from "react-icons/pi";
 
 export const adminMenuItems: MenuItemObject[] = [
@@ -176,41 +173,41 @@ export const adminMenuItems: MenuItemObject[] = [
     ],
   },
 
-  {
-    id: "survey-questions",
-    title: "Manage Survey Question",
-    type: "group",
-    children: [
-      {
-        id: "survey-questions-page",
-        title: "Survey Question",
-        type: "item",
-        icon: <FaQuestionCircle size={30} />,
-        path: "/admin/dashboard/surveyQuestions",
-      },
-      {
-        id: "surveys",
-        title: "Surveys",
-        type: "coollabse",
-        children: [
-          {
-            id: "all-surveys",
-            title: "All",
-            type: "item",
-            path: "/admin/dashboard/surveys",
-            icon: <FcSurvey size={30} />,
-          },
-          {
-            id: "create-excercise",
-            title: "Create survey",
-            type: "item",
-            path: "/admin/dashboard/surveys/create",
-            icon: <FcSurvey size={30} />,
-          },
-        ],
-      },
-    ],
-  },
+  // {
+  //   id: "survey-questions",
+  //   title: "Manage Survey Question",
+  //   type: "group",
+  //   children: [
+  //     {
+  //       id: "survey-questions-page",
+  //       title: "Survey Question",
+  //       type: "item",
+  //       icon: <FaQuestionCircle size={30} />,
+  //       path: "/admin/dashboard/surveyQuestions",
+  //     },
+  //     {
+  //       id: "surveys",
+  //       title: "Surveys",
+  //       type: "coollabse",
+  //       children: [
+  //         {
+  //           id: "all-surveys",
+  //           title: "All",
+  //           type: "item",
+  //           path: "/admin/dashboard/surveys",
+  //           icon: <FcSurvey size={30} />,
+  //         },
+  //         {
+  //           id: "create-excercise",
+  //           title: "Create survey",
+  //           type: "item",
+  //           path: "/admin/dashboard/surveys/create",
+  //           icon: <FcSurvey size={30} />,
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // },
 ];
 
 export interface MenuItemObject {

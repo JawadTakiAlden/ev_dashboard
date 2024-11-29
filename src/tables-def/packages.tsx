@@ -21,13 +21,13 @@ export interface Package {
 
 export const pricingColumns: MRT_ColumnDef<Pricing>[] = [
   {
-    accessorKey: "title", // Maps to the "title" field in the data
-    header: "Title", // Column header
+    accessorKey: "title",
+    header: "Title",
   },
   {
     accessorKey: "price",
-    header: "Price ($)",
-    Cell: ({ cell }) => `$${cell.getValue<number>().toFixed(2)}`, // Format price as currency
+    header: "Price (SAR)",
+    Cell: ({ cell }) => `SAR${cell.getValue<number>().toFixed(2)}`,
   },
   {
     accessorKey: "numberOfDays",
