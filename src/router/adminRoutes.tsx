@@ -24,6 +24,9 @@ import MealTypes from "../pages/MealTypes";
 import CreateMealPlan from "../pages/MealPlans/createMealPlan/createMealPlan";
 import MealPlanDetail from "../pages/MealPlans/mealPlanDetail";
 import WeekManagement from "../pages/weekManagement/weekManagement";
+import Banners from "../pages/banner";
+import Packages from "../pages/packages";
+import PackageDetail from "../pages/packages/PackageDetail";
 
 export const adminRoutes: RouteObject = {
   path: "",
@@ -179,6 +182,23 @@ export const adminRoutes: RouteObject = {
             {
               path: "weekManagement",
               element: <WeekManagement />,
+            },
+            {
+              path: "banners",
+              element: <Banners />,
+            },
+            {
+              path: "packages",
+              children: [
+                {
+                  path: "",
+                  element: <Packages />,
+                },
+                {
+                  path: ":packageId",
+                  element: <PackageDetail />,
+                },
+              ],
             },
           ],
         },

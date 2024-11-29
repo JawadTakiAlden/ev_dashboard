@@ -9,6 +9,7 @@ import { IoCalendarNumberOutline } from "react-icons/io5";
 import { CgExtensionAdd } from "react-icons/cg";
 
 import { FaQuestionCircle } from "react-icons/fa";
+import { PiFlagBannerFold } from "react-icons/pi";
 
 export const adminMenuItems: MenuItemObject[] = [
   {
@@ -44,6 +45,13 @@ export const adminMenuItems: MenuItemObject[] = [
     title: "Finance management",
     type: "group",
     children: [
+      {
+        id: "packages",
+        title: "Packages",
+        type: "item",
+        path: "/admin/dashboard/packages",
+        icon: <MdOutlinePayments size={30} />,
+      },
       {
         id: "subscription-management",
         type: "coollabse",
@@ -103,6 +111,7 @@ export const adminMenuItems: MenuItemObject[] = [
       },
     ],
   },
+
   {
     id: "workout-management",
     type: "group",
@@ -149,6 +158,20 @@ export const adminMenuItems: MenuItemObject[] = [
             icon: <CgGym size={30} />,
           },
         ],
+      },
+    ],
+  },
+  {
+    id: "banner",
+    title: "Banner",
+    type: "group",
+    children: [
+      {
+        id: "all-banners",
+        title: "Banners",
+        type: "item",
+        icon: <PiFlagBannerFold size={30} />,
+        path: "/admin/dashboard/banners",
       },
     ],
   },

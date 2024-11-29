@@ -9,7 +9,7 @@ let defaultMode = localStorage.getItem("fitness_mode") as "dark" | "light";
 
 defaultMode = defaultMode || "dark";
 
-export const useTheme = create<ThemeStore>((set) => ({
+export const useTheme = create<ThemeStore>((set, get) => ({
   mode: defaultMode,
   changeMode: () => {
     set((state) => ({ mode: state.mode === "dark" ? "light" : "dark" }));
