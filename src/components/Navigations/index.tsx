@@ -10,15 +10,15 @@ import { MenuItemObject } from "../../menu-items";
 const Sidebar = ({ items = [] }: { items?: MenuItemObject[] }) => {
   const { open, handelClose, handelOpen } = useSidebar();
   const theme = useTheme();
-  const matchDonwMD = useMediaQuery(theme.breakpoints.down("lg"));
+  const matchDonwLg = useMediaQuery(theme.breakpoints.down("lg"));
 
   useEffect(() => {
-    if (matchDonwMD) {
+    if (matchDonwLg) {
       handelClose();
     } else {
       handelOpen();
     }
-  }, [handelClose, handelOpen, matchDonwMD]);
+  }, [handelClose, handelOpen, matchDonwLg]);
 
   return (
     <>
@@ -33,7 +33,6 @@ const Sidebar = ({ items = [] }: { items?: MenuItemObject[] }) => {
           variant="permanent"
           open={open}
           onClose={handelClose}
-          ModalProps={{ keepMounted: true }}
         >
           <SidebarHeader />
           <Box
@@ -45,14 +44,13 @@ const Sidebar = ({ items = [] }: { items?: MenuItemObject[] }) => {
           </Box>
         </MiniDrawerStyled>
       </Box>
-
       <SwipeableDrawer
         anchor={"left"}
-        open={open}
+        open={open && matchDonwLg}
         variant="temporary"
         onClose={handelClose}
         onOpen={handelOpen}
-        swipeAreaWidth={40}
+        swipeAreaWidth={matchDonwLg ? 50 : 0}
         sx={{
           display: { lg: "none" },
           "& .MuiDrawer-paper": {

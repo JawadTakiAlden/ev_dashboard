@@ -36,13 +36,28 @@ const DashboardLayout = ({
             px: 3,
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton sx={{ mr: 1 }} onClick={handelSwitch}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <IconButton
+              sx={{ mr: 1, display: { xs: "none", lg: "flex" } }}
+              onClick={handelSwitch}
+            >
               <CgMenuLeftAlt />
             </IconButton>
             <LogoIcon logoWidth="30px" />
           </Box>
           <Box>
+            <IconButton
+              sx={{ mr: 1, display: { xs: "inline-flex", lg: "none" } }}
+              onClick={handelSwitch}
+            >
+              <CgMenuLeftAlt />
+            </IconButton>
+
             <IconButton
               onClick={() => {
                 const root = document.getElementById("root");
@@ -57,6 +72,7 @@ const DashboardLayout = ({
             >
               <MdFullscreen />
             </IconButton>
+
             <ModeSwitch />
           </Box>
         </Box>
