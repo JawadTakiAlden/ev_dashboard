@@ -4,7 +4,7 @@ import JustInViewRender from "../components/JustInViewRender";
 
 export interface SurveyQuestionModel {
   question: string;
-  image: string; // from dumy data take image from piscum
+  image: string;
 }
 
 export const surveyQuestions: SurveyQuestionModel[] = [

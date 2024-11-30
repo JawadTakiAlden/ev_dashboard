@@ -8,10 +8,10 @@ const PackageCard = ({ packageRow }: { packageRow: Package }) => {
   const [selectedPricing, setSelectedPricing] = useState<Pricing | null>(null);
 
   useEffect(() => {
-    if (packageRow.pricings.length > 0) {
-      setSelectedPricing(packageRow.pricings[0]);
+    if (packageRow?.pricings?.length! > 0) {
+      setSelectedPricing(packageRow?.pricings![0]);
     }
-  }, []);
+  }, [packageRow?.pricings]);
 
   return (
     <MainCard>
@@ -55,7 +55,7 @@ const PackageCard = ({ packageRow }: { packageRow: Package }) => {
         {packageRow.description}
       </Typography>
       <Stack sx={{ my: 1 }} flexDirection={"row"} gap={2} flexWrap={"wrap"}>
-        {packageRow.pricings.map((price) => (
+        {packageRow.pricings?.map((price) => (
           <Button
             onClick={() => setSelectedPricing(price)}
             variant={

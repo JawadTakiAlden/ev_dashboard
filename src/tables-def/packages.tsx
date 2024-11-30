@@ -16,7 +16,7 @@ export interface Package {
   name: string;
   description?: string;
   type: "group" | "personalized";
-  pricings: Pricing[];
+  pricings?: Pricing[];
 }
 
 export const pricingColumns: MRT_ColumnDef<Pricing>[] = [

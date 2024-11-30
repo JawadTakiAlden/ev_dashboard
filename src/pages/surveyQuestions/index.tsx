@@ -1,6 +1,7 @@
 import React from "react";
 import Table from "../../components/Table";
 import {
+  SurveyQuestionModel,
   surveyQuestions,
   surveyQuestionsColumns,
 } from "../../tables-def/surveyQuestions";
@@ -9,12 +10,16 @@ import DeleteQuestion from "./questionsActions/deleteQuestion";
 import UpdateQuestion from "./questionsActions/updateQuestion";
 import CreateQuestion from "./createQuestion/createQuestion";
 
-const SurveyQuestions = () => {
+const SurveyQuestions = ({
+  questions = surveyQuestions,
+}: {
+  questions?: SurveyQuestionModel[];
+}) => {
   return (
     <Box>
       <CreateQuestion />
       <Table
-        data={surveyQuestions}
+        data={questions}
         columns={surveyQuestionsColumns}
         enableRowActions
         renderRowActions={({ row }) => {

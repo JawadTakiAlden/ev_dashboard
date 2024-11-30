@@ -1,6 +1,5 @@
 import { FormikConfig, useFormik } from "formik";
 import React from "react";
-import { Package } from "../../../tables-def/packages";
 import {
   Box,
   FormControl,

@@ -196,7 +196,17 @@ export const adminRoutes: RouteObject = {
                 },
                 {
                   path: ":packageId",
-                  element: <PackageDetail />,
+
+                  children: [
+                    {
+                      path: "",
+                      element: <PackageDetail />,
+                    },
+                    {
+                      path: "survey/:surveyId",
+                      element: <SurveyDetail />,
+                    },
+                  ],
                 },
               ],
             },

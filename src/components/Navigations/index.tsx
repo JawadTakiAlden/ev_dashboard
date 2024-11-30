@@ -18,7 +18,7 @@ const Sidebar = ({ items = [] }: { items?: MenuItemObject[] }) => {
     } else {
       handelOpen();
     }
-  }, []);
+  }, [handelClose, handelOpen, matchDonwMD]);
 
   return !matchDonwMD ? (
     <Box component={"nav"}>

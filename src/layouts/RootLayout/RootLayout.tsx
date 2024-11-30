@@ -12,7 +12,7 @@ const RootLayout = () => {
 
   useEffect(() => {
     if (location.pathname === "/") navigate("/admin/dashboard/home");
-  }, []);
+  }, [location.pathname, navigate]);
 
   if (!mount) {
     return <ProgressBar />;

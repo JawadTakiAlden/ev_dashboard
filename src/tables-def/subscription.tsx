@@ -1,14 +1,14 @@
 import { MRT_ColumnDef } from "material-react-table";
-import { PackageModel } from "./package";
 import { PriceModel } from "./price";
 import { UserModel } from "./users";
 import { Chip, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import { Package } from "./packages";
 
 export interface SubscriptionModel {
   id: number;
   user: UserModel;
-  package: PackageModel;
+  package: Package;
   price: PriceModel;
   start_date: string;
   end_date: string;
@@ -25,7 +25,12 @@ export const subscriptions: SubscriptionModel[] = [
       email: "john@example.com",
       phone: "123-456-7890",
     },
-    package: { id: 1, name: "Gold", description: "Premium package" },
+    package: {
+      id: 1,
+      name: "Gold",
+      description: "Premium package",
+      type: "group",
+    },
     price: { id: 1, title: "Monthly Plan", price: 99.99, number_of_days: 30 },
     start_date: "2024-11-01",
     end_date: "2024-11-30",
@@ -40,7 +45,12 @@ export const subscriptions: SubscriptionModel[] = [
       email: "jane@example.com",
       phone: "234-567-8901",
     },
-    package: { id: 2, name: "Silver", description: "Standard package" },
+    package: {
+      id: 2,
+      name: "Silver",
+      description: "Standard package",
+      type: "group",
+    },
     price: {
       id: 2,
       title: "Quarterly Plan",
@@ -60,7 +70,12 @@ export const subscriptions: SubscriptionModel[] = [
       email: "mike@example.com",
       phone: "345-678-9012",
     },
-    package: { id: 3, name: "Bronze", description: "Basic package" },
+    package: {
+      id: 3,
+      name: "Bronze",
+      description: "Basic package",
+      type: "group",
+    },
     price: { id: 3, title: "Annual Plan", price: 899.99, number_of_days: 365 },
     start_date: "2024-01-01",
     end_date: "2024-12-31",
@@ -75,7 +90,12 @@ export const subscriptions: SubscriptionModel[] = [
       email: "emily@example.com",
       phone: "456-789-0123",
     },
-    package: { id: 1, name: "Gold", description: "Premium package" },
+    package: {
+      id: 1,
+      name: "Gold",
+      description: "Premium package",
+      type: "group",
+    },
     price: { id: 1, title: "Monthly Plan", price: 99.99, number_of_days: 30 },
     start_date: "2024-10-01",
     end_date: "2024-10-31",
@@ -90,7 +110,12 @@ export const subscriptions: SubscriptionModel[] = [
       email: "chris@example.com",
       phone: "567-890-1234",
     },
-    package: { id: 2, name: "Silver", description: "Standard package" },
+    package: {
+      id: 2,
+      name: "Silver",
+      description: "Standard package",
+      type: "group",
+    },
     price: {
       id: 2,
       title: "Quarterly Plan",
