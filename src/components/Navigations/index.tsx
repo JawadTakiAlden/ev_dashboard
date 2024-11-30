@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSidebar } from "../../store/sidebarStore";
 import MiniDrawerStyled from "./MiniDrawerStyled";
-import { Box, Drawer, useMediaQuery, useTheme } from "@mui/material";
+import { Box, SwipeableDrawer, useMediaQuery, useTheme } from "@mui/material";
 import { drawerWidth } from "../../config";
 import SidebarHeader from "./SidebarHeader";
 import NavItemsRenderer from "../NavItems";
@@ -20,53 +20,67 @@ const Sidebar = ({ items = [] }: { items?: MenuItemObject[] }) => {
     }
   }, [handelClose, handelOpen, matchDonwMD]);
 
-  return !matchDonwMD ? (
-    <Box component={"nav"}>
-      <MiniDrawerStyled
-        anchor={"left"}
-        variant="permanent"
-        open={open}
-        onClose={handelClose}
-        ModalProps={{ keepMounted: true }}
+  return (
+    <>
+      <Box
+        component={"nav"}
+        sx={{
+          display: { xs: "none", lg: "initial" },
+        }}
       >
-        <SidebarHeader />
-        <Box
-          sx={{
-            maxWidth: "100%",
-          }}
+        <MiniDrawerStyled
+          anchor={"left"}
+          variant="permanent"
+          open={open}
+          onClose={handelClose}
+          ModalProps={{ keepMounted: true }}
         >
-          <NavItemsRenderer items={items} />
-        </Box>
-      </MiniDrawerStyled>
-    </Box>
-  ) : (
-    <Drawer
-      anchor={"left"}
-      open={open}
-      variant="temporary"
-      onClose={handelClose}
-      sx={{
-        "& .MuiDrawer-paper": {
-          boxSizing: "border-box",
-          width: drawerWidth,
-          borderRight: "1px solid",
-          borderRightColor: "divider",
-          backgroundImage: "none",
-          boxShadow: "inherit",
-        },
-      }}
-    >
-      <Box role="presentation" onClick={handelClose}>
-        <SidebarHeader />
-        <Box
-          sx={{
-            maxWidth: "100%",
-          }}
-        >
-          <NavItemsRenderer items={items} />
-        </Box>
+          <SidebarHeader />
+          <Box
+            sx={{
+              maxWidth: "100%",
+            }}
+          >
+            <NavItemsRenderer items={items} />
+          </Box>
+        </MiniDrawerStyled>
       </Box>
-    </Drawer>
+
+      <SwipeableDrawer
+        anchor={"left"}
+        open={open}
+        variant="temporary"
+        onClose={handelClose}
+        onOpen={handelOpen}
+        swipeAreaWidth={40}
+        sx={{
+          display: { lg: "none" },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: drawerWidth,
+            borderRight: "1px solid",
+            borderRightColor: "divider",
+            backgroundImage: "none",
+            boxShadow: "inherit",
+          },
+        }}
+      >
+        <Box
+          sx={{ maxWidth: drawerWidth }}
+          role="presentation"
+          onClick={handelClose}
+        >
+          <SidebarHeader />
+          <Box
+            sx={{
+              maxWidth: "100%",
+            }}
+          >
+            <NavItemsRenderer items={items} />
+          </Box>
+        </Box>
+      </SwipeableDrawer>
+    </>
   );
 };
 

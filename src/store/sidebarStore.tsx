@@ -10,7 +10,7 @@ interface SidebarIStore {
 }
 
 export const useSidebar = create<SidebarIStore>((set) => ({
-  open: true,
+  open: false,
   selectedId: undefined,
   handelClose: () => {
     set({ open: false });

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../src/App.css"],
+  "sourcesContent": [":fullscreen,\r\n:-ms-fullscreen,\r\n:-moz-full-screen,\r\n:-webkit-full-screen {\r\n  background-color: #fff;\r\n}\r\n"],
+  "mappings": "AAAA,YACA,gBACA,kBACA,qBACE,iBAAkB,IACpB",
+  "names": []
+}
