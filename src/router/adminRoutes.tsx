@@ -54,7 +54,7 @@ export const adminRoutes: RouteObject = {
                   element: <AllUsers />,
                 },
                 {
-                  path: ":id",
+                  path: ":userId",
                   element: <UserProfile />,
                 },
               ],

@@ -5,6 +5,7 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Skeleton,
   Stack,
   styled,
   Switch,
@@ -21,6 +22,7 @@ import { WorkoutLog } from "../../tables-def/workout-logs";
 import SectionTitle from "../../components/SectionTitle";
 import { useEffect, useState } from "react";
 import {
+  FitnessSubscription,
   getProgressHistoryChartData,
   userProfile,
 } from "../../tables-def/user-profile";
@@ -28,6 +30,12 @@ import JustInViewRender from "../../components/JustInViewRender";
 import { useSearchParams } from "react-router-dom";
 import WorkoutManagement from "../../components/WorkoutManagement/WorkoutManagement";
 import { workouts } from "../../tables-def/workout";
+import { useGetUserProfile, useGetUserWeightRecords } from "../../api/users";
+import {
+  areEqual,
+  FixedSizeList as List,
+  ListChildComponentProps,
+} from "react-window";
 
 const InformationTypography = styled(Typography)(() => ({
   fontSize: "calc(18px + 0.02vw)",
@@ -68,20 +76,57 @@ const RenderRow = ({ workout }: { workout: WorkoutLog }) => {
   );
 };
 
+const Subscription: React.FC<
+  ListChildComponentProps<FitnessSubscription[]>
+> = ({ index, style, data }) => {
+  const subscription = data[index];
+
+  return (
+    <div
+      style={{
+        ...style,
+        width: "300px",
+      }}
+      key={index}
+    >
+      <MainCard border={false}>
+        <SectionTitle>Subscription Plan</SectionTitle>
+        <Stack gap="10px">
+          <InformationTypography>
+            Subscriped at : {subscription.start_date}
+          </InformationTypography>
+          <InformationTypography>
+            Experid On : {subscription.end_date}
+          </InformationTypography>
+          <InformationTypography>
+            the player should be renew after {subscription.days_left} days
+          </InformationTypography>
+        </Stack>
+      </MainCard>
+    </div>
+  );
+};
+
 const UserProfile = () => {
   const { getVlaue } = useGetGetDarkValue();
   const theme = useTheme();
   const [profile] = useState(userProfile);
   const [, setActiveDay] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
+  const user = useGetUserProfile();
+  // const [chartdata, setChartdata] = useState<{
+  //   catgeories: string[];
+  //   series: number[];
+  // } | null>(null);
 
-  const { catgeories, series } = getProgressHistoryChartData({
-    weightProgress: profile.progress_history,
-  });
+  // const chartData = useGetUserWeightRecords();
+  // const { catgeories, series } = getProgressHistoryChartData({
+  //   weightProgress: profile.progress_history,
+  // });
 
-  const barData = getProgressHistoryChartData({
-    weightProgress: profile.progress_history,
-  });
+  // const barData = getProgressHistoryChartData({
+  //   weightProgress: profile.progress_history,
+  // });
 
   const package_id = searchParams.get("package_id");
   const day = searchParams.get("day");
@@ -89,6 +134,14 @@ const UserProfile = () => {
   useEffect(() => {
     setActiveDay(day);
   }, [day, package_id]);
+
+  // useEffect(() => {
+  //   if (chartData.isSuccess) {
+  //     console.log(chartData.data.data);
+  //   }
+  // }, [chartData]);
+
+  const userProfileData = user?.data?.data;
 
   return (
     <Screen title="jawad taki aldeen">
@@ -133,45 +186,59 @@ const UserProfile = () => {
                 alignItems={{ xs: "center", sm: "flex-start" }}
               >
                 <Box>
-                  <Typography
-                    variant="h2"
-                    sx={{
-                      textAlign: { xs: "center", sm: "start" },
-                      width: "100%",
-                    }}
-                  >
-                    {profile.name}
-                  </Typography>
-                  <Typography
-                    variant="subtitle1"
-                    sx={{
-                      textAlign: { xs: "center", sm: "start" },
-                      width: "100%",
-                      mt: 1,
-                      color: (theme) =>
-                        getVlaue(
-                          theme.palette.grey[200],
-                          theme.palette.grey[700]
-                        ),
-                    }}
-                  >
-                    {profile.email}
-                  </Typography>
-                  <Typography
-                    variant="subtitle1"
-                    sx={{
-                      textAlign: { xs: "center", sm: "start" },
-                      width: "100%",
-                      mt: 1,
-                      color: (theme) =>
-                        getVlaue(
-                          theme.palette.grey[200],
-                          theme.palette.grey[700]
-                        ),
-                    }}
-                  >
-                    {profile.birth_of_date}
-                  </Typography>
+                  {user.isLoading ? (
+                    <Skeleton width={150} variant="text" />
+                  ) : (
+                    <Typography
+                      variant="h2"
+                      sx={{
+                        textAlign: { xs: "center", sm: "start" },
+                        width: "100%",
+                      }}
+                    >
+                      {userProfileData?.name}
+                    </Typography>
+                  )}
+
+                  {user.isLoading ? (
+                    <Skeleton width={250} variant="text" />
+                  ) : (
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        textAlign: { xs: "center", sm: "start" },
+                        width: "100%",
+                        mt: 1,
+                        color: (theme) =>
+                          getVlaue(
+                            theme.palette.grey[200],
+                            theme.palette.grey[700]
+                          ),
+                      }}
+                    >
+                      {userProfileData?.email}
+                    </Typography>
+                  )}
+
+                  {user.isLoading ? (
+                    <Skeleton width={250} variant="text" />
+                  ) : (
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        textAlign: { xs: "center", sm: "start" },
+                        width: "100%",
+                        mt: 1,
+                        color: (theme) =>
+                          getVlaue(
+                            theme.palette.grey[200],
+                            theme.palette.grey[700]
+                          ),
+                      }}
+                    >
+                      {userProfileData?.phone}
+                    </Typography>
+                  )}
                 </Box>
                 <Box>
                   <FormControlLabel
@@ -185,22 +252,32 @@ const UserProfile = () => {
               <Divider />
             </Grid>
             <Grid size={12}>
-              <SectionTitle>Subscription Plan</SectionTitle>
-              <Stack gap="10px">
-                <InformationTypography>
-                  this account belongs to {profile.subscription.name}{" "}
-                  subscription plan
-                </InformationTypography>
-                <InformationTypography>
-                  Enrolled at : {profile.created_at}
-                </InformationTypography>
-                <InformationTypography>
-                  Subscriped at : {profile.subscription.start_date}
-                </InformationTypography>
-                <InformationTypography>
-                  Experid On : {profile.subscription.end_date}
-                </InformationTypography>
-              </Stack>
+              {user.isLoading ? (
+                <MainCard border={false}>
+                  <Skeleton width={150} variant="text" />
+                  <Skeleton width={140} variant="text" />
+                  <Skeleton width={130} variant="text" />
+                  <Skeleton width={120} variant="text" />
+                </MainCard>
+              ) : (
+                <>
+                  <List
+                    itemCount={
+                      userProfileData?.fitness_subscriptions?.length || 0
+                    }
+                    itemSize={310}
+                    height={380}
+                    width={1000}
+                    itemData={userProfileData?.fitness_subscriptions}
+                    layout="horizontal"
+                    style={{
+                      width: "100%",
+                    }}
+                  >
+                    {Subscription}
+                  </List>
+                </>
+              )}
             </Grid>
             <Grid size={12}>
               <Divider />
@@ -211,7 +288,7 @@ const UserProfile = () => {
       <Grid container spacing={gridSpacing}>
         <Grid size={12}>
           <SectionTitle>Progress History</SectionTitle>
-          <Grid container spacing={gridSpacing}>
+          {/* <Grid container spacing={gridSpacing}>
             <Grid size={{ xs: 12, md: 6 }}>
               <MainCard border={false} sx={{ p: 1 }}>
                 <Typography variant="h4">Weigh Progress</Typography>
@@ -322,9 +399,9 @@ const UserProfile = () => {
                 </JustInViewRender>
               </MainCard>
             </Grid>
-          </Grid>
+          </Grid> */}
         </Grid>
-        <Grid size={12}>
+        {/* <Grid size={12}>
           <SectionTitle>Workout Logs</SectionTitle>
           <MainCard
             sx={{
@@ -338,7 +415,7 @@ const UserProfile = () => {
               <RenderRow key={i} workout={workout} />
             ))}
           </MainCard>
-        </Grid>
+        </Grid> */}
       </Grid>
       <Grid sx={{ mt: 2 }} container spacing={gridSpacing}>
         <WorkoutManagement
