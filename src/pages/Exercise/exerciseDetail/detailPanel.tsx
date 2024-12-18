@@ -4,10 +4,9 @@ import { gridSpacing } from "../../../config";
 import MainCard from "../../../components/MainCard";
 import ReactPlayer from "react-player";
 import Grid from "@mui/material/Grid2";
-import { exercises } from "../../../tables-def/excercise";
+import { Exercise, exercises } from "../../../tables-def/excercise";
 
-const DetailPanel = () => {
-  const exercise = exercises[0];
+const DetailPanel = ({ exercise }: { exercise: Exercise }) => {
   return (
     <Box>
       <Grid container spacing={gridSpacing}>

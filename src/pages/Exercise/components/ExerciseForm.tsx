@@ -13,24 +13,31 @@ import { gridSpacing } from "../../../config";
 import { FormikConfig, useFormik } from "formik";
 import FileImagePicker from "../../../components/FileImagePicker";
 import ReactPlayer from "react-player";
+import { FormLoadingButtonProps } from "../../../tables-def/loadingButtonProps";
+import { LoadingButton } from "@mui/lab";
 
 interface ExerciseFormProps {
   task: "create" | "update";
+  progress?: number;
 }
 
 interface ExerciseFormValues {
   name: string;
   description: string;
   duration: number;
-  image_url: null | string | File;
+  image: null | string | File;
   target_muscles_image: null | string | File;
-  video_url: null | string | File;
+  video: null | string | File;
 }
 
 const ExerciseForm = ({
   task,
+  loadingButtonProps,
+  progress,
   ...formikProps
-}: FormikConfig<ExerciseFormValues> & ExerciseFormProps) => {
+}: FormikConfig<ExerciseFormValues> &
+  ExerciseFormProps &
+  FormLoadingButtonProps) => {
   const {
     handleBlur,
     handleChange,
@@ -45,12 +52,12 @@ const ExerciseForm = ({
 
   const exerciseImg = useMemo(() => {
     return (
-      values.image_url && (
+      values.image && (
         <img
           src={
-            typeof values.image_url === "string"
-              ? values.image_url
-              : URL.createObjectURL(values.image_url as unknown as MediaSource)
+            typeof values.image === "string"
+              ? values.image
+              : URL.createObjectURL(values.image as unknown as MediaSource)
           }
           alt="exercise "
           style={{
@@ -64,7 +71,7 @@ const ExerciseForm = ({
         />
       )
     );
-  }, [values.image_url]);
+  }, [values.image]);
 
   const targetImage = useMemo(() => {
     return (
@@ -93,20 +100,20 @@ const ExerciseForm = ({
 
   const exerciseVideo = useMemo(() => {
     return (
-      values.video_url && (
+      values.video && (
         <ReactPlayer
           controls
           width={"100%"}
           height={400}
           url={
-            typeof values.video_url === "string"
-              ? values.video_url
-              : URL.createObjectURL(values.video_url as unknown as MediaSource)
+            typeof values.video === "string"
+              ? values.video
+              : URL.createObjectURL(values.video as unknown as MediaSource)
           }
         />
       )
     );
-  }, [values.video_url]);
+  }, [values.video]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -175,11 +182,11 @@ const ExerciseForm = ({
               <FileImagePicker
                 title="Exercise Image"
                 onSelectImage={(files) => {
-                  setFieldValue("image_url", files?.[0]);
+                  setFieldValue("image", files?.[0]);
                 }}
-                name="image_url"
+                name="image"
                 accept="image/png,image/jpg,image/jpeg"
-                id="image_url"
+                id="image"
                 onBlur={handleBlur}
                 renderContent={() => {
                   return (
@@ -192,10 +199,10 @@ const ExerciseForm = ({
                 }}
               />
             </Grid>
-            <Grid size={"auto"}>{values.image_url && exerciseImg}</Grid>
+            <Grid size={"auto"}>{values.image && exerciseImg}</Grid>
           </Grid>
-          {touched.image_url && errors.image_url && (
-            <FormHelperText error>{errors.image_url}</FormHelperText>
+          {touched.image && errors.image && (
+            <FormHelperText error>{errors.image}</FormHelperText>
           )}
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
@@ -238,11 +245,11 @@ const ExerciseForm = ({
                 }}
                 title="Exercise Video"
                 onSelectImage={(files) => {
-                  setFieldValue("video_url", files?.[0]);
+                  setFieldValue("video", files?.[0]);
                 }}
                 accept="video/mp4"
-                name="video_url"
-                id="video_url"
+                name="video"
+                id="video"
                 onBlur={handleBlur}
                 renderContent={() => {
                   return (
@@ -256,23 +263,29 @@ const ExerciseForm = ({
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              {values.video_url && exerciseVideo}
+              {values.video && exerciseVideo}
             </Grid>
           </Grid>
-          {touched.video_url && errors.video_url && (
-            <FormHelperText error>{errors.video_url}</FormHelperText>
+          {touched.video && errors.video && (
+            <FormHelperText error>{errors.video}</FormHelperText>
           )}
         </Grid>
       </Grid>
       <Box my={2}>
-        <Button
+        <LoadingButton
           type="submit"
           sx={{ width: { xs: "100%", sm: "fit-content" } }}
           variant="contained"
           color="primary"
+          {...loadingButtonProps}
         >
           {task}
-        </Button>
+        </LoadingButton>
+        {loadingButtonProps?.loading && (
+          <Typography>
+            please wait , creating ... <b>{progress}%</b>
+          </Typography>
+        )}
       </Box>
     </form>
   );

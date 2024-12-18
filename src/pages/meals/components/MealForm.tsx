@@ -2,19 +2,22 @@ import React, { useMemo } from "react";
 import * as Yup from "yup";
 import { FormikConfig, useFormik } from "formik";
 import {
+  Autocomplete,
   Box,
   FormControl,
   FormHelperText,
   InputLabel,
-  MenuItem,
   OutlinedInput,
-  Select,
+  TextField,
   Typography,
 } from "@mui/material";
-import FileImagePicker from "../../../components/FileImagePicker";
 import { LoadingButton } from "@mui/lab";
 import Grid from "@mui/material/Grid2";
 import { gridSpacing } from "../../../config";
+import useGetTypes from "../../../api/type/useGetTypes";
+import { MealType } from "../../../tables-def/meal-types";
+import { FormLoadingButtonProps } from "../../../tables-def/loadingButtonProps";
+import FileImagePicker from "../../../components/FileImagePicker";
 
 // Updated Validation Schema
 export const mealValidationSchema = Yup.object().shape({
@@ -32,9 +35,11 @@ export const mealValidationSchema = Yup.object().shape({
     .min(0, "Carbohydrates cannot be negative."),
   fats: Yup.number().nullable().min(0, "Fats cannot be negative."),
   fiber: Yup.number().nullable().min(0, "Fiber cannot be negative."),
-  image_url: Yup.string().nullable().url("Image URL must be a valid URL."),
-  can_be_skipped: Yup.boolean(),
-  can_be_modified: Yup.boolean(),
+  image_url_url: Yup.string()
+    .nullable()
+    .url("image_url URL must be a valid URL."),
+  // can_be_skipped: Yup.boolean(),
+  // can_be_modified: Yup.boolean(),
 });
 
 interface MealFormValues {
@@ -42,11 +47,11 @@ interface MealFormValues {
   description: string;
   calories: number;
   protein: number;
-  carbohydrates: number;
+  carb: number;
   fats: number;
   fiber: number;
-  image_url: null | string | File;
-  type: string;
+  // image_url: null | string | File;
+  types: MealType[];
 }
 
 interface ExerciseFormProps {
@@ -55,8 +60,11 @@ interface ExerciseFormProps {
 
 const MealForm = ({
   task = "create",
+  loadingButtonProps,
   ...formikProps
-}: FormikConfig<MealFormValues> & ExerciseFormProps) => {
+}: FormikConfig<MealFormValues> &
+  ExerciseFormProps &
+  FormLoadingButtonProps) => {
   const {
     values,
     touched,
@@ -69,28 +77,30 @@ const MealForm = ({
     ...formikProps,
   });
 
-  const memoziedImage = useMemo(() => {
-    return (
-      values.image_url && (
-        <img
-          src={
-            typeof values.image_url === "string"
-              ? values.image_url
-              : URL.createObjectURL(values.image_url as unknown as MediaSource)
-          }
-          alt="meal"
-          style={{
-            width: "150px",
-            height: "100%",
-            borderRadius: "6px",
-            maxHeight: "150px",
-            objectFit: "contain",
-            maxWidth: "100%",
-          }}
-        />
-      )
-    );
-  }, [values.image_url]);
+  // const memoziedimage_url = useMemo(() => {
+  //   return (
+  //     values.image_url && (
+  //       <img
+  //         src={
+  //           typeof values.image_url === "string"
+  //             ? values.image_url
+  //             : URL.createObjectURL(values.image_url as unknown as MediaSource)
+  //         }
+  //         alt="meal"
+  //         style={{
+  //           width: "150px",
+  //           height: "100%",
+  //           borderRadius: "6px",
+  //           maxHeight: "150px",
+  //           objectFit: "contain",
+  //           maxWidth: "100%",
+  //         }}
+  //       />
+  //     )
+  //   );
+  // }, [values.image_url]);
+
+  const mealTypes = useGetTypes();
 
   return (
     <Box>
@@ -167,15 +177,15 @@ const MealForm = ({
             <FormControl>
               <InputLabel>Carbohydrates (g)</InputLabel>
               <OutlinedInput
-                name="carbohydrates"
+                name="carb"
                 label="Carbohydrates"
                 type="number"
-                value={values.carbohydrates}
+                value={values.carb}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
-              {!!touched.carbohydrates && !!errors.carbohydrates && (
-                <FormHelperText error>{errors.carbohydrates}</FormHelperText>
+              {!!touched.carb && !!errors.carb && (
+                <FormHelperText error>{errors.carb}</FormHelperText>
               )}
             </FormControl>
           </Grid>
@@ -212,35 +222,41 @@ const MealForm = ({
             </FormControl>
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
-            <FormControl>
-              <InputLabel>Meal Type</InputLabel>
-              <Select
-                value={values.type}
-                onChange={handleChange}
-                name="type"
-                defaultValue=""
-                label="Meal Type"
-                onBlur={handleBlur}
-              >
-                <MenuItem value={""}>select type</MenuItem>
-                <MenuItem value={"breakfast"}>breakfast</MenuItem>
-                <MenuItem value={"lunch"}>lunch</MenuItem>
-              </Select>
-              {!!touched.type && !!errors.type && (
-                <FormHelperText error>{errors.type}</FormHelperText>
+            {/* <FormControl error={!!touched.type && !!errors.type}> */}
+            <Autocomplete
+              multiple
+              id="meal_types"
+              disableCloseOnSelect
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              getOptionLabel={(option) => option.title}
+              onChange={(e, newVlaue) => {
+                setFieldValue("types", newVlaue);
+                console.log(newVlaue);
+              }}
+              value={values.types}
+              loading={mealTypes.isLoading}
+              getOptionKey={(option) => option.id}
+              options={mealTypes?.data?.data || []}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Meal type"
+                  placeholder="meal types"
+                />
               )}
-            </FormControl>
+            />
+            {/* </FormControl> */}
           </Grid>
-          <Grid size={12}>
+          {/* <Grid size={12}>
             <Grid container columnSpacing={gridSpacing}>
               <Grid size={"grow"}>
                 <FileImagePicker
-                  title="Exercise Image"
+                  title="Exercise image_url"
                   onSelectImage={(files) => {
                     setFieldValue("image_url", files?.[0]);
                   }}
                   name="image_url"
-                  accept="image/png,image/jpg,image/jpeg"
+                  accept="image_url/png,image_url/jpg,image_url/jpeg"
                   id="image_url"
                   onBlur={handleBlur}
                   renderContent={() => {
@@ -254,14 +270,15 @@ const MealForm = ({
                   }}
                 />
               </Grid>
-              <Grid size="auto">{memoziedImage}</Grid>
+              <Grid size="auto">{memoziedimage_url}</Grid>
             </Grid>
-          </Grid>
+          </Grid> */}
           <Grid size={12}>
             <LoadingButton
               sx={{ my: 1, width: { xs: "100%", sm: "initial" } }}
               variant="outlined"
               type="submit"
+              {...loadingButtonProps}
             >
               {task}
             </LoadingButton>

@@ -1,14 +1,21 @@
 import * as Yup from "yup";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import ExerciseForm from "../components/ExerciseForm";
+import { useCreateExercise } from "../../../api/exercise";
 
 const CreateExcercise = () => {
+  const { createExercice, progress } = useCreateExercise();
   return (
     <Box>
       <ExerciseForm
         task="create"
+        progress={progress}
         onSubmit={(values) => {
           console.log(values);
+          createExercice.mutate(values);
+        }}
+        loadingButtonProps={{
+          loading: createExercice.isPending,
         }}
         validationSchema={validationSchema}
         initialValues={initialValues}
@@ -23,9 +30,9 @@ const initialValues = {
   name: "",
   description: "",
   duration: 0,
-  image_url: null,
+  image: null,
   target_muscles_image: null,
-  video_url: null,
+  video: null,
 };
 
 export const validationSchema = Yup.object().shape({
@@ -39,7 +46,7 @@ export const validationSchema = Yup.object().shape({
     .nullable()
     .positive("Duration must be a positive number")
     .integer("Duration must be an integer"),
-  image_url: Yup.mixed().required().label("Image"),
+  image: Yup.mixed().required().label("Image"),
   target_muscles_image: Yup.mixed().required().label("Target muscles image"),
-  video_url: Yup.mixed().required().label("Exercise Video"),
+  video: Yup.mixed().required().label("Exercise Video"),
 });

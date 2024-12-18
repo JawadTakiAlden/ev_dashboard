@@ -12,12 +12,15 @@ import {
 } from "@mui/material";
 import { MdDeleteSweep } from "react-icons/md";
 import { MealIngreadiant } from "../../tables-def/meal-ingrediant";
+import { useDeleteIngredient } from "../../api/ingredients";
+import { LoadingButton } from "@mui/lab";
 
-const deleteMealIngrediant = ({
+const DeleteMealIngrediant = ({
   mealIngrediant,
 }: {
   mealIngrediant: MealIngreadiant;
 }) => {
+  const deleteIngredient = useDeleteIngredient();
   return (
     <PopupButton
       title="delete meal ingrediant"
@@ -48,13 +51,16 @@ const deleteMealIngrediant = ({
               <Button onClick={handleClose} variant="contained" color={"error"}>
                 Cancel
               </Button>
-              <Button
-                onClick={handleClose}
+              <LoadingButton
+                onClick={async () => {
+                  await deleteIngredient.mutateAsync(mealIngrediant.id);
+                  handleClose();
+                }}
                 variant="outlined"
                 color={"success"}
               >
                 Confirm
-              </Button>
+              </LoadingButton>
             </DialogActions>
           </Dialog>
         );
@@ -63,4 +69,4 @@ const deleteMealIngrediant = ({
   );
 };
 
-export default deleteMealIngrediant;
+export default DeleteMealIngrediant;

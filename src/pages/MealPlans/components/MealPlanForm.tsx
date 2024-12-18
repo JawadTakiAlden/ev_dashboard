@@ -12,16 +12,18 @@ import { FormikConfig, useFormik } from "formik";
 import React, { useMemo } from "react";
 import { gridSpacing } from "../../../config";
 import Grid from "@mui/material/Grid2";
-import { MealType, mealTypes } from "../../../tables-def/meal-types";
+import { MealType } from "../../../tables-def/meal-types";
 import FileImagePicker from "../../../components/FileImagePicker";
 import { LoadingButton } from "@mui/lab";
+import useGetTypes from "../../../api/type/useGetTypes";
+import { FormLoadingButtonProps } from "../../../tables-def/loadingButtonProps";
 
 interface MealPlanFormVlaues {
   title: string;
   calories: number | undefined;
   image: string | null | File;
   price_monthly: undefined | number;
-  meal_types: MealType[];
+  types: MealType[];
 }
 
 interface MealPlanFormProps {
@@ -30,8 +32,11 @@ interface MealPlanFormProps {
 
 const MealPlanForm = ({
   task = "create",
+  loadingButtonProps,
   ...formikConfig
-}: FormikConfig<MealPlanFormVlaues> & MealPlanFormProps) => {
+}: FormikConfig<MealPlanFormVlaues> &
+  MealPlanFormProps &
+  FormLoadingButtonProps) => {
   const {
     values,
     errors,
@@ -43,6 +48,8 @@ const MealPlanForm = ({
   } = useFormik({
     ...formikConfig,
   });
+
+  const mealTypes = useGetTypes();
 
   const memoziedImage = useMemo(() => {
     return (
@@ -157,24 +164,23 @@ const MealPlanForm = ({
                   minWidth: "300px",
                 }}
               >
-                <FormControl
-                  error={!!touched.meal_types && !!errors.meal_types}
-                >
+                <FormControl error={!!touched.types && !!errors.types}>
                   <Autocomplete
                     multiple
-                    id="meal_types"
+                    id="types"
                     disableCloseOnSelect
                     isOptionEqualToValue={(option, value) =>
                       option.id === value.id
                     }
                     getOptionLabel={(option) => option.title}
                     onChange={(e, newVlaue) => {
-                      setFieldValue("meal_types", newVlaue);
+                      setFieldValue("types", newVlaue);
                       console.log(newVlaue);
                     }}
-                    value={values.meal_types}
+                    value={values.types}
+                    loading={mealTypes.isLoading}
                     getOptionKey={(option) => option.id}
-                    options={mealTypes}
+                    options={mealTypes?.data?.data || []}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -221,6 +227,7 @@ const MealPlanForm = ({
               type="submit"
               variant="outlined"
               sx={{ width: { xs: "100%", sm: "initial" } }}
+              {...loadingButtonProps}
             >
               {task} plan
             </LoadingButton>

@@ -1,10 +1,20 @@
+import { useGetMealSubscription } from "../../../../api/subscriptions";
 import Table from "../../../../components/Table";
 import mealSubscriptions, {
   mealSubscriptionColumns,
 } from "../../../../tables-def/meal-subscriptions";
 
 const FoodSubscriptionTable = () => {
-  return <Table columns={mealSubscriptionColumns} data={mealSubscriptions} />;
+  const mealSubscription = useGetMealSubscription();
+  return (
+    <Table
+      columns={mealSubscriptionColumns}
+      data={mealSubscription?.data?.data || []}
+      state={{
+        isLoading: mealSubscription.isLoading,
+      }}
+    />
+  );
 };
 
 export default FoodSubscriptionTable;

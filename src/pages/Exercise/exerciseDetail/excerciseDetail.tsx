@@ -1,10 +1,12 @@
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { GiHomeGarage } from "react-icons/gi";
 import { IoSettingsOutline } from "react-icons/io5";
 import DetailPanel from "./detailPanel";
 import SettingsPannel from "./settingsPanel";
 import { useSearchParams } from "react-router-dom";
+import { useShowExercise } from "../../../api/exercise";
+import LoadingDataError from "../../../components/LoadingDataError";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -55,6 +57,16 @@ const ExcerciseDetail = () => {
     setTab(newValue);
   };
 
+  const exerciseDetail = useShowExercise();
+
+  if (exerciseDetail.isLoading) {
+    return <Typography>Loading ...</Typography>;
+  }
+
+  if (exerciseDetail.isError) {
+    return <LoadingDataError refetch={exerciseDetail.refetch} />;
+  }
+
   return (
     <Box
       sx={{
@@ -86,10 +98,10 @@ const ExcerciseDetail = () => {
         />
       </Tabs>
       <TabPanel value={tab} index={0}>
-        <DetailPanel />
+        <DetailPanel exercise={exerciseDetail.data?.data!} />
       </TabPanel>
       <TabPanel value={tab} index={1}>
-        <SettingsPannel />
+        <SettingsPannel exercise={exerciseDetail.data?.data!} />
       </TabPanel>
     </Box>
   );

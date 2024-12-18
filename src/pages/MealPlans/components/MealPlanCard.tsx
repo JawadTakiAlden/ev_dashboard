@@ -54,7 +54,7 @@ const MealPlanCard = ({ plan }: { plan: MealPlan }) => {
       />
       <CardContent>
         <Stack flexDirection={"row"} gap={1} flexWrap={"wrap"}>
-          {plan.meal_types.map((mealType, i) => (
+          {plan.types.map((mealType, i) => (
             <Chip
               variant="outlined"
               key={i}
@@ -73,7 +73,7 @@ const MealPlanCard = ({ plan }: { plan: MealPlan }) => {
         >
           this plan comes with{" "}
           <span className="bolder">{plan.calories} calories</span> divided in{" "}
-          {plan.meal_types.length} meals on the day
+          {plan.types.length} meals on the day
         </Typography>
         <Typography
           variant="h1"

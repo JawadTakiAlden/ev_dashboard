@@ -10,6 +10,7 @@ import { FormikConfig, useFormik } from "formik";
 import React from "react";
 import { gridSpacing } from "../../../config";
 import { LoadingButton } from "@mui/lab";
+import { FormLoadingButtonProps } from "../../../tables-def/loadingButtonProps";
 
 interface PriceFormProps {
   task?: "create" | "update";
@@ -19,14 +20,16 @@ interface PriceFormProps {
 export interface PriceFormValue {
   title: string;
   price: number;
-  numberOfDays: number;
+  number_of_days: number;
+  package_id: number | string;
 }
 
 const PricingForm = ({
   task = "create",
   dir = "row",
+  loadingButtonProps,
   ...formikConfig
-}: FormikConfig<PriceFormValue> & PriceFormProps) => {
+}: FormikConfig<PriceFormValue> & PriceFormProps & FormLoadingButtonProps) => {
   const {
     values,
     touched,
@@ -71,22 +74,29 @@ const PricingForm = ({
               <FormHelperText error>{errors.price}</FormHelperText>
             )}
           </FormControl>
-          <FormControl error={!!touched.numberOfDays && !!errors.numberOfDays}>
+          <FormControl
+            error={!!touched.number_of_days && !!errors.number_of_days}
+          >
             <InputLabel>Number of days</InputLabel>
             <OutlinedInput
-              name="numberOfDays"
+              name="number_of_days"
               label="Number of days"
               type="number"
-              value={values.numberOfDays}
+              value={values.number_of_days}
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            {!!touched.numberOfDays && !!errors.numberOfDays && (
-              <FormHelperText error>{errors.numberOfDays}</FormHelperText>
+            {!!touched.number_of_days && !!errors.number_of_days && (
+              <FormHelperText error>{errors.number_of_days}</FormHelperText>
             )}
           </FormControl>
         </Stack>
-        <LoadingButton disabled={!isValid} variant="outlined">
+        <LoadingButton
+          disabled={!isValid}
+          variant="outlined"
+          type="submit"
+          {...loadingButtonProps}
+        >
           {task}
         </LoadingButton>
       </form>

@@ -169,7 +169,10 @@ const WorkoutForm = ({
                 </FormControl>
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <FormControl error={!!touched.duration && !!errors.duration}>
+                <FormControl
+                  disabled
+                  error={!!touched.duration && !!errors.duration}
+                >
                   <FormLabel>Workout Type</FormLabel>
                   <RadioGroup
                     name="type"
@@ -180,12 +183,12 @@ const WorkoutForm = ({
                   >
                     <FormControlLabel
                       value="group"
-                      control={<Radio />}
+                      control={<Radio readOnly />}
                       label="Group"
                     />
                     <FormControlLabel
                       value="personalized"
-                      control={<Radio />}
+                      control={<Radio readOnly />}
                       label="Personalized"
                     />
                   </RadioGroup>

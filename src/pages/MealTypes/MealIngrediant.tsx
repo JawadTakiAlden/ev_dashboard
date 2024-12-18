@@ -10,14 +10,25 @@ import {
 import DeleteMealType from "./deleteMealType";
 import { CiEdit } from "react-icons/ci";
 import * as yup from "yup";
+import {
+  useCreateIngredient,
+  useDeleteIngredient,
+  useGetIngredients,
+  useUpdateIngredient,
+} from "../../api/ingredients";
+import DeleteMealIngrediant from "./deleteMealIngrediant";
 const TableComponent = Loadable(lazy(() => import("../../components/Table")));
 
 const MealIngrediant = () => {
-  const [initailValues, SetInitialValues] = useState<MealTypeVlaue>({
+  const [initailValues, setInitialValues] = useState<MealTypeVlaue>({
     title: "",
   });
 
   const [mode, setMode] = useState<"create" | "update">("create");
+
+  const ingredients = useGetIngredients();
+  const createIngredient = useCreateIngredient();
+  const updateIngreidnet = useUpdateIngredient();
 
   return (
     <>
@@ -35,13 +46,19 @@ const MealIngrediant = () => {
         })}
         initialValues={initailValues}
         onSubmit={(values) => {
-          console.log(values);
+          if (mode === "create") {
+            createIngredient.mutate(values);
+          } else {
+            updateIngreidnet.mutate({ data: values, id: initailValues.id! });
+          }
+          setInitialValues({ title: "" });
+          setMode("create");
         }}
       />
       {mode === "update" && (
         <Button
           onClick={() => {
-            SetInitialValues({ title: "" });
+            setInitialValues({ title: "" });
             setMode("create");
           }}
           color="inherit"
@@ -51,17 +68,20 @@ const MealIngrediant = () => {
         </Button>
       )}
       <TableComponent
-        data={mealIngredients}
+        data={ingredients?.data?.data || []}
         columns={ingrediantColumns}
         enableRowActions
+        state={{
+          isLoading: ingredients.isLoading,
+        }}
         renderRowActions={({ row }) => {
           return (
             <Stack flexDirection={"row"} gap={2}>
-              <DeleteMealType mealType={row.original} />
+              <DeleteMealIngrediant mealIngrediant={row.original} />
               <IconButton
                 onClick={() => {
                   setMode("update");
-                  SetInitialValues(row.original);
+                  setInitialValues(row.original);
                 }}
                 color="warning"
               >

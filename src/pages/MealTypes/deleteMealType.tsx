@@ -12,8 +12,11 @@ import {
 } from "@mui/material";
 import { MdDeleteSweep } from "react-icons/md";
 import { MealType } from "../../tables-def/meal-types";
+import useDeleteType from "../../api/type/useDeleteType";
+import { LoadingButton } from "@mui/lab";
 
 const DeleteMealType = ({ mealType }: { mealType: MealType }) => {
+  const deleteType = useDeleteType();
   return (
     <PopupButton
       title="delete meal type"
@@ -42,13 +45,17 @@ const DeleteMealType = ({ mealType }: { mealType: MealType }) => {
               <Button onClick={handleClose} variant="contained" color={"error"}>
                 Cancel
               </Button>
-              <Button
-                onClick={handleClose}
+              <LoadingButton
+                onClick={async () => {
+                  await deleteType.mutateAsync(mealType.id);
+                  handleClose();
+                }}
+                loading={deleteType.isPending}
                 variant="outlined"
                 color={"success"}
               >
                 Confirm
-              </Button>
+              </LoadingButton>
             </DialogActions>
           </Dialog>
         );

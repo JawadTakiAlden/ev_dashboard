@@ -5,6 +5,7 @@ import Grid from "@mui/material/Grid2";
 import { gridSpacing } from "../../../config";
 import FileImagePicker from "../../../components/FileImagePicker";
 import { LoadingButton } from "@mui/lab";
+import { FormLoadingButtonProps } from "../../../tables-def/loadingButtonProps";
 
 interface BannerFormProps {
   task?: "create" | "update";
@@ -16,8 +17,11 @@ interface BannerFormValues {
 
 const BannerForm = ({
   task = "create",
+  loadingButtonProps,
   ...formikConfig
-}: FormikConfig<BannerFormValues> & BannerFormProps) => {
+}: FormikConfig<BannerFormValues> &
+  BannerFormProps &
+  FormLoadingButtonProps) => {
   const {
     values,
     touched,
@@ -88,7 +92,13 @@ const BannerForm = ({
             )}
           </Grid>
           <Grid size={12}>
-            <LoadingButton fullWidth variant="outlined" disabled={!isValid}>
+            <LoadingButton
+              fullWidth
+              variant="outlined"
+              type="submit"
+              disabled={!isValid}
+              {...loadingButtonProps}
+            >
               {task}
             </LoadingButton>
           </Grid>

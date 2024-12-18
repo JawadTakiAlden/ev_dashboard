@@ -7,12 +7,14 @@ import {
   DialogTitle,
 } from "@mui/material";
 import BannerForm from "./BannerForm";
+import { useCreateBanner } from "../../../api/banner";
 
 const AddBanner = () => {
+  const createBanner = useCreateBanner();
   return (
     <PopupButton
       title="create banner"
-      DialogRender={({ props }) => {
+      DialogRender={({ props, handleClose }) => {
         return (
           <Dialog {...props}>
             <DialogTitle>Create banner</DialogTitle>
@@ -24,11 +26,15 @@ const AddBanner = () => {
                 Illo atque eveniet sapiente! Maiores?
               </DialogContentText>
               <BannerForm
+                loadingButtonProps={{
+                  loading: createBanner.isPending,
+                }}
                 initialValues={{
                   image: null,
                 }}
-                onSubmit={(values) => {
-                  console.log(values);
+                onSubmit={async (values) => {
+                  await createBanner.mutateAsync(values);
+                  handleClose();
                 }}
               />
             </DialogContent>

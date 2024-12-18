@@ -19,12 +19,15 @@ import LineChart from "../../components/charts/LineChart";
 import MainCard from "../../components/MainCard";
 import { WorkoutLog } from "../../tables-def/workout-logs";
 import SectionTitle from "../../components/SectionTitle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   getProgressHistoryChartData,
   userProfile,
 } from "../../tables-def/user-profile";
 import JustInViewRender from "../../components/JustInViewRender";
+import { useSearchParams } from "react-router-dom";
+import WorkoutManagement from "../../components/WorkoutManagement/WorkoutManagement";
+import { workouts } from "../../tables-def/workout";
 
 const InformationTypography = styled(Typography)(() => ({
   fontSize: "calc(18px + 0.02vw)",
@@ -69,6 +72,8 @@ const UserProfile = () => {
   const { getVlaue } = useGetGetDarkValue();
   const theme = useTheme();
   const [profile] = useState(userProfile);
+  const [, setActiveDay] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
 
   const { catgeories, series } = getProgressHistoryChartData({
     weightProgress: profile.progress_history,
@@ -77,6 +82,13 @@ const UserProfile = () => {
   const barData = getProgressHistoryChartData({
     weightProgress: profile.progress_history,
   });
+
+  const package_id = searchParams.get("package_id");
+  const day = searchParams.get("day");
+
+  useEffect(() => {
+    setActiveDay(day);
+  }, [day, package_id]);
 
   return (
     <Screen title="jawad taki aldeen">
@@ -327,6 +339,22 @@ const UserProfile = () => {
             ))}
           </MainCard>
         </Grid>
+      </Grid>
+      <Grid sx={{ mt: 2 }} container spacing={gridSpacing}>
+        <WorkoutManagement
+          type={"personalized"}
+          user={{
+            id: userProfile.id,
+            name: userProfile.name,
+          }}
+          targetPackage={{
+            id: 5,
+            name: "package of user",
+          }}
+          data={{
+            Saturday: [workouts[0]],
+          }}
+        />
       </Grid>
     </Screen>
   );

@@ -53,7 +53,7 @@ const WorkoutCard = ({ workout }: { workout: WorkoutModel }) => {
             component={BaseLink}
             color="textPrimary"
             variant="body1"
-            to={`/admin/dashboard/users/${workout.user?.id}`}
+            to={`/dashboard/users/${workout.user?.id}`}
           >
             {workout.user?.name}
           </Link>
@@ -88,7 +88,7 @@ const WorkoutCard = ({ workout }: { workout: WorkoutModel }) => {
           component={BaseLink}
           color="primary"
           variant="button"
-          to={`/admin/dashboard/workout/${workout.id}`}
+          to={`/dashboard/workout/${workout.id}`}
         >
           more
         </Link>

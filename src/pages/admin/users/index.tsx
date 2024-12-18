@@ -4,13 +4,18 @@ import Table from "../../../components/Table";
 import { userTableColumns } from "../../../tables-def/users";
 import { CgProfile } from "react-icons/cg";
 import { Link } from "react-router-dom";
+import { useGetUsers } from "../../../api/users";
 
 const AllUsers = () => {
+  const users = useGetUsers();
   return (
     <Box>
       <Table
         withExport
         enableRowActions
+        state={{
+          isLoading: users.isLoading,
+        }}
         renderRowActions={({ row }) => {
           return (
             <Tooltip title={"profile"}>
@@ -24,14 +29,7 @@ const AllUsers = () => {
             </Tooltip>
           );
         }}
-        data={[
-          {
-            id: "1",
-            name: "jawad",
-            phone: "0948966979",
-            email: "jawad.taki.alden2002@gmail.com",
-          },
-        ]}
+        data={users?.data?.data || []}
         columns={userTableColumns}
       />
     </Box>

@@ -17,7 +17,10 @@ import memoize from "memoize-one";
 const Exercise: React.FC<ListChildComponentProps> = memo(
   ({ index, style, data }) => (
     <div style={{ ...style, width: "300px" }} key={index}>
-      <ExcerciseCard exercise={data[index].exercise} />
+      <ExcerciseCard
+        noActions={!data.withAction}
+        exercise={data.exercises[index].exercise}
+      />
     </div>
   ),
   areEqual
@@ -30,7 +33,7 @@ const CompletionCard = ({ completion }: { completion: WorkoutCompletion }) => {
         <Link
           component={BaseLink}
           variant="h5"
-          to={`/admin/dashboard/users/${completion.user.id}`}
+          to={`/dashboard/users/${completion.user.id}`}
         >
           {completion.user.name}
         </Link>
@@ -43,7 +46,7 @@ const CompletionCard = ({ completion }: { completion: WorkoutCompletion }) => {
 const Completion: React.FC<ListChildComponentProps> = memo(
   ({ index, style, data }) => (
     <div style={{ ...style }} key={index}>
-      <CompletionCard completion={data[index]} />
+      <CompletionCard completion={data.completions[index]} />
     </div>
   ),
   areEqual
@@ -53,7 +56,7 @@ const createItemData = memoize((items) => ({
   items,
 }));
 
-const WorkOutDetailPage = () => {
+const WorkOutDetailPage = ({ withAction = true }: { withAction?: boolean }) => {
   const exercises = createItemData(workoutDetail.exercises);
   const completions = createItemData(workoutDetail.workout_completion);
   return (
@@ -81,7 +84,7 @@ const WorkOutDetailPage = () => {
                       component={BaseLink}
                       color="textPrimary"
                       variant="body1"
-                      to={`/admin/dashboard/users/${workoutDetail.user?.id}`}
+                      to={`/dashboard/users/${workoutDetail.user?.id}`}
                     >
                       {workoutDetail.coach}
                     </Link>
@@ -94,7 +97,7 @@ const WorkOutDetailPage = () => {
                       component={BaseLink}
                       color="textPrimary"
                       variant="body1"
-                      to={`/admin/dashboard/users/${workoutDetail.user?.id}`}
+                      to={`/dashboard/users/${workoutDetail.user?.id}`}
                     >
                       {workoutDetail.user?.name}
                     </Link>
@@ -163,7 +166,7 @@ const WorkOutDetailPage = () => {
               itemSize={310}
               height={400}
               width={1000}
-              itemData={exercises.items}
+              itemData={{ exercises: exercises.items, withAction }}
               layout="horizontal"
               style={{
                 width: "100%",
@@ -199,7 +202,7 @@ const WorkOutDetailPage = () => {
             itemSize={260}
             height={150}
             width={1000}
-            itemData={completions.items}
+            itemData={{ completions: completions.items, withAction }}
             layout="horizontal"
             style={{
               width: "100%",

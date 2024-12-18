@@ -27,6 +27,7 @@ import WeekManagement from "../pages/weekManagement/weekManagement";
 import Banners from "../pages/banner";
 import Packages from "../pages/packages";
 import PackageDetail from "../pages/packages/PackageDetail";
+import GroupWorkoutManagement from "../pages/groupWorkoutManagem/GroupWorkoutManagement";
 
 export const adminRoutes: RouteObject = {
   path: "",
@@ -77,6 +78,10 @@ export const adminRoutes: RouteObject = {
                 {
                   path: "",
                   element: <Workout />,
+                },
+                {
+                  path: "group-workout",
+                  element: <GroupWorkoutManagement />,
                 },
                 {
                   path: "create",

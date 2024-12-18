@@ -4,10 +4,13 @@ import Grid from "@mui/material/Grid2";
 import { gridSpacing } from "../../../config";
 import StatisticCard from "../../../components/StatisticCard";
 import Loadable from "../../../components/Loadable";
+import { useGetStats } from "../../../api/admin/stats";
 
 const SigninStatstics = Loadable(lazy(() => import("./SigninStatstics")));
 
 const Home = () => {
+  const stats = useGetStats();
+
   return (
     <Screen title="Admin Panel - Home">
       <Grid container direction={"column"} spacing={gridSpacing}>
@@ -15,34 +18,38 @@ const Home = () => {
         <Grid container>
           <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
             <StatisticCard
-              count="120,350,600"
+              count={`${stats?.data?.data?.metrics?.activeFitnessSubscriptions}`}
               isLoss={false}
               percentage={20}
-              title="Total users number"
+              loading={stats.isLoading}
+              title="Active fitness subscription"
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
             <StatisticCard
-              count="120,350,600"
+              count={`${stats?.data?.data?.metrics?.activeMealSubscriptions}`}
               isLoss={false}
               percentage={20}
-              title="Total users number"
+              loading={stats.isLoading}
+              title="Active meal subscription"
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
             <StatisticCard
-              count="120,350,600"
+              count={`${stats?.data?.data?.metrics?.newSignupsCount}`}
               isLoss={false}
               percentage={20}
-              title="Total Food subsercption"
+              loading={stats.isLoading}
+              title="New sign ups"
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
             <StatisticCard
-              count="120,350,600"
+              count={`${stats?.data?.data?.metrics?.workoutCompletionRate}`}
               isLoss
               percentage={20}
-              title="Total users number"
+              loading={stats.isLoading}
+              title="Workout completion rate"
             />
           </Grid>
         </Grid>

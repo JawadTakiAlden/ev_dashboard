@@ -143,7 +143,7 @@ export const subscriptionsColumns: MRT_ColumnDef<SubscriptionModel, any>[] = [
       <Typography
         component={Link}
         variant="subtitle2"
-        to={`/admin/dashboard/users/${row.original.user.id}`}
+        to={`/dashboard/users/${row.original.user.id}`}
         sx={{
           textDecoration: "none",
           color: "text.primary",

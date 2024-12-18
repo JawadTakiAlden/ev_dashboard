@@ -9,6 +9,7 @@ import { FormikConfig, useFormik } from "formik";
 import React, { useEffect } from "react";
 import Grid from "@mui/material/Grid2";
 import { gridSpacing } from "../../../config";
+import { FormLoadingButtonProps } from "../../../tables-def/loadingButtonProps";
 
 export interface MealTypeVlaue {
   id?: number;
@@ -22,8 +23,11 @@ interface MealTypeFormProps {
 const MealTypeForm = ({
   task = "create",
   initialValues,
+  loadingButtonProps,
   ...formikConfig
-}: FormikConfig<MealTypeVlaue> & MealTypeFormProps) => {
+}: FormikConfig<MealTypeVlaue> &
+  MealTypeFormProps &
+  FormLoadingButtonProps) => {
   const {
     values,
     touched,
@@ -34,7 +38,6 @@ const MealTypeForm = ({
     setValues,
   } = useFormik({
     initialValues,
-    validateOnMount: true,
     ...formikConfig,
   });
 
@@ -66,6 +69,7 @@ const MealTypeForm = ({
             type="submit"
             disabled={!values.title}
             sx={{ width: { xs: "100%", sm: "initial" } }}
+            {...loadingButtonProps}
           >
             {task}
           </LoadingButton>

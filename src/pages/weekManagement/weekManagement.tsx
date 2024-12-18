@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { gridSpacing } from "../../config";
-import { Meal, meals } from "../../tables-def/meals";
+import { Meal } from "../../tables-def/meals";
 import { mealTypes } from "../../tables-def/meal-types";
 
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
@@ -117,15 +117,6 @@ const WeekManagement = () => {
       </div>
     );
   };
-
-  const mealOptions =
-    mealFilter.id === 0
-      ? meals.filter((meal) => !droppedMeals[day].meals.includes(meal.id!))
-      : meals.filter(
-          (meal) =>
-            meal.type === mealFilter.title &&
-            !droppedMeals[day].meals.includes(meal.id!)
-        );
 
   return (
     <Box>

@@ -7,7 +7,13 @@ import { Link } from "react-router-dom";
 import DeleteSurvey from "../../Survey/components/DeleteSurvey";
 import UnderlineHeader from "../../../components/UnderlineHeader";
 
-const SurveyCard = ({ survey }: { survey: Survey }) => {
+const SurveyCard = ({
+  survey,
+  withActions = true,
+}: {
+  survey: Survey;
+  withActions?: boolean;
+}) => {
   return (
     <MainCard>
       <UnderlineHeader>{survey.title}</UnderlineHeader>
@@ -15,7 +21,7 @@ const SurveyCard = ({ survey }: { survey: Survey }) => {
         <IconButton component={Link} to={`survey/${survey.id}`} color={"info"}>
           <IoMdInformationCircle />
         </IconButton>
-        <DeleteSurvey survey={survey} />
+        {withActions && <DeleteSurvey survey={survey} />}
       </Stack>
     </MainCard>
   );

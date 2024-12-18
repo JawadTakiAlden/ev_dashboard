@@ -10,8 +10,8 @@ import * as yup from "yup";
 import { Formik } from "formik";
 import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
-import { useNavigate } from "react-router";
 import EyeIcon from "../../../components/EyeIcon";
+import useLogin from "../../../api/useLogin";
 
 interface LoginVlaues {
   email: string;
@@ -30,15 +30,14 @@ const validationSchema = yup.object().shape({
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
+  const login = useLogin();
   return (
     <Box>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={(values: LoginVlaues) => {
-          console.log(values);
-          navigate("/admin/dashboard/home");
+          login.mutate(values);
         }}
       >
         {({
@@ -90,7 +89,12 @@ const LoginForm = () => {
                 <FormHelperText>{errors.password}</FormHelperText>
               )}
             </FormControl>
-            <LoadingButton variant="contained" fullWidth type="submit">
+            <LoadingButton
+              loading={login.isPending}
+              variant="contained"
+              fullWidth
+              type="submit"
+            >
               Login
             </LoadingButton>
           </form>

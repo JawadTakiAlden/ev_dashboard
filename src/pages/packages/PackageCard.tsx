@@ -3,10 +3,11 @@ import { Package, Pricing } from "../../tables-def/packages";
 import { alpha, Box, Button, Stack, Typography } from "@mui/material";
 import MainCard from "../../components/MainCard";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "../../providers/AuthProvider";
 
 const PackageCard = ({ packageRow }: { packageRow: Package }) => {
   const [selectedPricing, setSelectedPricing] = useState<Pricing | null>(null);
-
+  const { base } = useAuthContext();
   useEffect(() => {
     if (packageRow?.pricings?.length! > 0) {
       setSelectedPricing(packageRow?.pricings![0]);
@@ -73,7 +74,7 @@ const PackageCard = ({ packageRow }: { packageRow: Package }) => {
               fontSize: "calc(22px + 0.1vw)",
             }}
           >
-            {selectedPricing?.numberOfDays} / Days
+            {selectedPricing?.number_of_days} / Days
           </Typography>
           <Typography
             sx={{
@@ -96,7 +97,7 @@ const PackageCard = ({ packageRow }: { packageRow: Package }) => {
         <Button
           variant="outlined"
           component={Link}
-          to={`/admin/dashboard/packages/${packageRow.id}`}
+          to={`/${base}/dashboard/packages/${packageRow.id}`}
           sx={{
             ":hover": {
               boxShadow: (theme) => `-3px -3px ${theme.palette.primary.main}`,

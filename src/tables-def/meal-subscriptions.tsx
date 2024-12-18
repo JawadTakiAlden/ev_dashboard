@@ -241,7 +241,7 @@ export const mealSubscriptionColumns: MRT_ColumnDef<MealSubscriptionModel>[] = [
       <Typography
         component={Link}
         variant="subtitle2"
-        to={`/admin/dashboard/users/${row.original.user.id}`}
+        to={`/dashboard/users/${row.original.user.id}`}
         sx={{
           textDecoration: "none",
           color: "text.primary",

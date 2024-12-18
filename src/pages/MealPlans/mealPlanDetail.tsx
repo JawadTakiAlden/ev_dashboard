@@ -4,11 +4,22 @@ import Grid from "@mui/material/Grid2";
 import { gridSpacing } from "../../config";
 import DeleteTypography from "../../components/DeleteTypography";
 import MealPlanForm from "./components/MealPlanForm";
-import { mealPlans } from "../../tables-def/meal-plans";
 import DoupleClickToConfirm from "../../components/DoupleClickToConfirm";
+import { useDeleteMealPlan, useShowMealPlan } from "../../api/mealPlan";
+import LoadingDataError from "../../components/LoadingDataError";
 
 const MealPlanDetail = () => {
-  const mealPlan = mealPlans[0];
+  const deleteMealPlan = useDeleteMealPlan();
+  const meal = useShowMealPlan();
+
+  if (meal.isLoading) {
+    return <Typography>Loading ...</Typography>;
+  }
+
+  if (meal.isError) {
+    return <LoadingDataError refetch={meal.refetch} />;
+  }
+
   return (
     <Box>
       <Grid container spacing={gridSpacing}>
@@ -26,7 +37,7 @@ const MealPlanDetail = () => {
             onSubmit={(values) => {
               console.log(values);
             }}
-            initialValues={mealPlan}
+            initialValues={meal.data?.data!}
           />
         </Grid>
         <Grid size={12}>
@@ -40,8 +51,9 @@ const MealPlanDetail = () => {
             </Typography>
             <DoupleClickToConfirm
               onClick={() => {
-                console.log("clicked");
+                deleteMealPlan.mutate();
               }}
+              loading={deleteMealPlan.isPending}
               color="error"
             >
               delete meal plan

@@ -1,6 +1,6 @@
 import React from "react";
 import MainCard from "./MainCard";
-import { alpha, Chip, Icon, Stack, Typography } from "@mui/material";
+import { alpha, Chip, Icon, Skeleton, Stack, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { AiOutlineFall } from "react-icons/ai";
 import { AiOutlineRise } from "react-icons/ai";
@@ -9,6 +9,7 @@ interface StatsticCardProps {
   title: string;
   count: string;
   percentage: number;
+  loading?: boolean;
   color?: "warning" | "info";
   isLoss: boolean;
 }
@@ -17,6 +18,7 @@ const StatisticCard = ({
   title,
   count,
   percentage,
+  loading = false,
   isLoss,
   color,
 }: StatsticCardProps) => {
@@ -32,20 +34,35 @@ const StatisticCard = ({
       }}
     >
       <Stack spacing={0.5}>
-        <Typography variant="h6" color="text.secondary">
-          {title}
-        </Typography>
+        {loading ? (
+          <Skeleton variant="text" width={"100%"} height={"60px"} />
+        ) : (
+          <Typography variant="h6" color="text.secondary">
+            {title}
+          </Typography>
+        )}
+
         <Grid container alignItems="center">
-          <Grid>
-            <Typography variant="h4" color="inherit">
-              {count}
-            </Typography>
+          <Grid size={"auto"}>
+            {loading ? (
+              <Skeleton variant="text" width={"100px"} height={"50px"} />
+            ) : (
+              <Typography variant="h4" color="inherit">
+                {count}
+              </Typography>
+            )}
           </Grid>
           {percentage && (
             <Grid>
               <Chip
                 icon={
-                  isLoss ? (
+                  loading ? (
+                    <Skeleton
+                      width={"30px"}
+                      height={"100%"}
+                      variant="rectangular"
+                    />
+                  ) : isLoss ? (
                     <Icon>
                       <AiOutlineFall />
                     </Icon>
@@ -55,7 +72,7 @@ const StatisticCard = ({
                     </Icon>
                   )
                 }
-                label={`${percentage}%`}
+                label={loading ? "" : `${percentage}%`}
                 sx={{
                   ml: 1.25,
                   pl: 1,

@@ -1,12 +1,19 @@
 import { ReactNode } from "react";
-import { MdHome, MdPeopleOutline } from "react-icons/md";
+import {
+  MdGroupWork,
+  MdHome,
+  MdPeopleOutline,
+  MdRequestPage,
+} from "react-icons/md";
 import { GiMeal } from "react-icons/gi";
 import { MdOutlinePayments } from "react-icons/md";
 import { CgGym } from "react-icons/cg";
 import { GiHotMeal } from "react-icons/gi";
-import { IoCalendarNumberOutline } from "react-icons/io5";
+import { IoCalendarNumberOutline, IoCreateOutline } from "react-icons/io5";
 import { CgExtensionAdd } from "react-icons/cg";
 import { PiFlagBannerFold } from "react-icons/pi";
+import { CiChat2 } from "react-icons/ci";
+import { FaFirstOrder } from "react-icons/fa";
 
 export const adminMenuItems: MenuItemObject[] = [
   {
@@ -110,6 +117,14 @@ export const adminMenuItems: MenuItemObject[] = [
   },
 
   {
+    id: "chat",
+    title: "Chat",
+    type: "item",
+    path: "/chat",
+    icon: <CiChat2 size={30} />,
+  },
+
+  {
     id: "workout-management",
     type: "group",
     title: "Workouts Managemnt",
@@ -151,7 +166,7 @@ export const adminMenuItems: MenuItemObject[] = [
             id: "create-workout",
             title: "Create workout",
             type: "item",
-            path: "/admin/dashboard/workout/create",
+            path: "/admin/dashboard/workout/group-workout",
             icon: <CgGym size={30} />,
           },
         ],
@@ -183,7 +198,7 @@ export const adminMenuItems: MenuItemObject[] = [
   //       title: "Survey Question",
   //       type: "item",
   //       icon: <FaQuestionCircle size={30} />,
-  //       path: "/admin/dashboard/surveyQuestions",
+  //       path: "/dashboard/surveyQuestions",
   //     },
   //     {
   //       id: "surveys",
@@ -194,20 +209,90 @@ export const adminMenuItems: MenuItemObject[] = [
   //           id: "all-surveys",
   //           title: "All",
   //           type: "item",
-  //           path: "/admin/dashboard/surveys",
+  //           path: "/dashboard/surveys",
   //           icon: <FcSurvey size={30} />,
   //         },
   //         {
   //           id: "create-excercise",
   //           title: "Create survey",
   //           type: "item",
-  //           path: "/admin/dashboard/surveys/create",
+  //           path: "/dashboard/surveys/create",
   //           icon: <FcSurvey size={30} />,
   //         },
   //       ],
   //     },
   //   ],
   // },
+];
+
+export const coacheMenuItems: MenuItemObject[] = [
+  {
+    title: "Dashboard",
+    type: "group",
+    children: [
+      {
+        id: "coach-home",
+        path: "/coach/dashboard/home",
+        title: "Home",
+        type: "item",
+        icon: <MdHome size={30} />,
+        external: false,
+      },
+    ],
+  },
+  {
+    id: "users-requests",
+    title: "User Requests",
+    type: "group",
+    children: [
+      {
+        id: "all-workout-requests",
+        title: "Workout Requests",
+        type: "item",
+        path: "/coach/dashboard/workoutRequests",
+        icon: <MdRequestPage size={30} />,
+      },
+    ],
+  },
+  {
+    id: "group-workout",
+    title: "Group Workout",
+    type: "item",
+    path: "/coach/dashboard/group-workout",
+    icon: <MdGroupWork size={30} />,
+  },
+  {
+    id: "chat",
+    title: "Chat",
+    type: "item",
+    path: "/chat",
+    icon: <CiChat2 size={30} />,
+  },
+];
+
+export const kitchenItems: MenuItemObject[] = [
+  {
+    title: "Dashboard",
+    type: "group",
+    children: [
+      {
+        id: "kitchen-order",
+        path: "/kitchen/dashboard/orders",
+        title: "Orders",
+        type: "item",
+        icon: <FaFirstOrder size={30} />,
+        external: false,
+      },
+      {
+        id: "create-meal",
+        path: "/kitchen/dashboard/create-meal",
+        title: "Create Meal",
+        type: "item",
+        icon: <IoCreateOutline size={30} />,
+        external: false,
+      },
+    ],
+  },
 ];
 
 export interface MenuItemObject {

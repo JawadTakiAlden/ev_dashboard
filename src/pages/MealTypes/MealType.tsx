@@ -2,10 +2,13 @@ import { Button, IconButton, Stack, Typography } from "@mui/material";
 import React, { lazy, useState } from "react";
 import MealTypeForm, { MealTypeVlaue } from "./components/MealTypeForm";
 import Loadable from "../../components/Loadable";
-import { mealTypes, mealTypesColumns } from "../../tables-def/meal-types";
+import { mealTypesColumns } from "../../tables-def/meal-types";
 import DeleteMealType from "./deleteMealType";
 import { CiEdit } from "react-icons/ci";
 import * as yup from "yup";
+import useGetTypes from "../../api/type/useGetTypes";
+import useCreateType from "../../api/type/useCreateType";
+import useUpdateType from "../../api/type/useUpdateType";
 
 const TableComponent = Loadable(lazy(() => import("../../components/Table")));
 
@@ -15,6 +18,11 @@ const MealType = () => {
   });
 
   const [mode, setMode] = useState<"create" | "update">("create");
+
+  const types = useGetTypes();
+  const createType = useCreateType();
+  const updateType = useUpdateType();
+
   return (
     <>
       <Typography variant="h4" mb={2} sx={{ textTransform: "capitalize" }}>
@@ -30,8 +38,17 @@ const MealType = () => {
             .label("meal ingrediant title"),
         })}
         initialValues={initailValues}
-        onSubmit={(values) => {
-          console.log(values);
+        loadingButtonProps={{
+          loading: createType.isPending || updateType.isPending,
+        }}
+        onSubmit={async (values) => {
+          if (mode === "create") {
+            await createType.mutateAsync(values);
+          } else if (mode === "update") {
+            await updateType.mutateAsync(values);
+          }
+          SetInitialValues({ title: "" });
+          setMode("create");
         }}
       />
       {mode === "update" && (
@@ -47,9 +64,12 @@ const MealType = () => {
         </Button>
       )}
       <TableComponent
-        data={mealTypes}
+        data={types?.data?.data || []}
         columns={mealTypesColumns}
         enableRowActions
+        state={{
+          isLoading: types.isLoading,
+        }}
         renderRowActions={({ row }) => {
           return (
             <Stack flexDirection={"row"} gap={2}>

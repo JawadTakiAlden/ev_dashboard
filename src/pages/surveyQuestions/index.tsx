@@ -12,16 +12,19 @@ import CreateQuestion from "./createQuestion/createQuestion";
 
 const SurveyQuestions = ({
   questions = surveyQuestions,
+  withActions = true,
 }: {
   questions?: SurveyQuestionModel[];
+  withActions?: boolean;
 }) => {
   return (
     <Box>
-      <CreateQuestion />
+      {withActions && <CreateQuestion />}
+
       <Table
         data={questions}
         columns={surveyQuestionsColumns}
-        enableRowActions
+        enableRowActions={withActions}
         renderRowActions={({ row }) => {
           return (
             <Stack flexDirection={"row"} gap={1}>

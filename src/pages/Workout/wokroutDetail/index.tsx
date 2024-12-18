@@ -10,7 +10,7 @@ import { IoSettings } from "react-icons/io5";
 import WorkOutDetailPage from "./workoutDetail";
 import SettingsPannel from "./SettingsPannel";
 
-const MainWorkoutDetail = () => {
+const MainWorkoutDetail = ({ withAction = true }: { withAction?: boolean }) => {
   const [value, setValue] = React.useState("1");
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -29,20 +29,24 @@ const MainWorkoutDetail = () => {
                 icon={<CgHome size={30} />}
                 value="1"
               />
-              <Tab
-                iconPosition="end"
-                label="Settings"
-                icon={<IoSettings size={30} />}
-                value="2"
-              />
+              {withAction && (
+                <Tab
+                  iconPosition="end"
+                  label="Settings"
+                  icon={<IoSettings size={30} />}
+                  value="2"
+                />
+              )}
             </TabList>
           </Box>
           <TabPanel value="1" sx={{ px: 0 }}>
-            <WorkOutDetailPage />
+            <WorkOutDetailPage withAction={withAction} />
           </TabPanel>
-          <TabPanel value="2" sx={{ px: 0 }}>
-            <SettingsPannel />
-          </TabPanel>
+          {withAction && (
+            <TabPanel value="2" sx={{ px: 0 }}>
+              <SettingsPannel />
+            </TabPanel>
+          )}
         </TabContext>
       </Box>
     </>

@@ -1,17 +1,27 @@
 import React from "react";
-import { useParams } from "react-router";
-import { meals } from "../../../tables-def/meals";
-import { alpha, Box, Divider, Stack, Typography } from "@mui/material";
+import {
+  alpha,
+  Box,
+  Divider,
+  Skeleton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { gridSpacing } from "../../../config";
 import DeleteTypography from "../../../components/DeleteTypography";
 import DoupleClickToConfirm from "../../../components/DoupleClickToConfirm";
 import MealForm from "../components/MealForm";
+import { useDeleteMeal, useShowMeal, useUpdateMeal } from "../../../api/meals";
+import LoadingDataError from "../../../components/LoadingDataError";
 
 const MealDetail = () => {
-  const { mealId } = useParams<{ mealId: string }>();
-  const searchMeal = meals.filter((meal) => meal.id === +mealId!);
-  const meal = searchMeal[0];
+  const meal = useShowMeal();
+  const deleteMeal = useDeleteMeal();
+  const updateMeal = useUpdateMeal();
+  if (meal.isError) {
+    return <LoadingDataError refetch={meal.refetch} />;
+  }
 
   return (
     <Box>
@@ -34,25 +44,46 @@ const MealDetail = () => {
                   alpha(theme.palette.primary.main, 0.1),
               }}
             >
-              <img
-                src={meal.image_url}
-                alt={meal.name}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                }}
-              />
+              {meal.isLoading && (
+                <Skeleton
+                  width={"100%"}
+                  height={"100%"}
+                  variant="rectangular"
+                />
+              )}
+              {!meal.isLoading && (
+                <img
+                  src={meal.data?.data.image_url}
+                  alt={meal.data?.data.name}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                  }}
+                />
+              )}
             </Box>
             <Box sx={{ flex: 1 }}>
               <Typography variant="h3" mb={2}>
-                {meal.name}
+                {meal.isLoading ? (
+                  <Skeleton width={100} height={20} />
+                ) : (
+                  meal.data?.data.name
+                )}
               </Typography>
               <Typography variant="body1" mb={2}>
-                {meal.description}
+                {meal.isLoading ? (
+                  <Skeleton width={150} height={20} />
+                ) : (
+                  meal.data?.data.description
+                )}
               </Typography>
               <Typography variant="caption">
-                Calories : {meal.calories}
+                {meal.isLoading ? (
+                  <Skeleton width={70} height={20} />
+                ) : (
+                  meal.data?.data.calories
+                )}
               </Typography>
             </Box>
           </Stack>
@@ -69,24 +100,24 @@ const MealDetail = () => {
           >
             Update Meal
           </DeleteTypography>
-          <MealForm
-            task="update"
-            onSubmit={(values) => {
-              console.log(values);
-            }}
-            initialValues={{
-              name: "Grilled Chicken Salad",
-              description:
-                "Fresh greens topped with grilled chicken breast. Fresh greens topped with grilled chicken breast. Fresh greens topped with grilled chicken breast. Fresh greens topped with grilled chicken breast. Fresh greens topped with grilled chicken breast. Fresh greens topped with grilled chicken breast. Fresh greens topped with grilled chicken breast.",
-              calories: 250,
-              image_url: "https://picsum.photos/seed/chicken_salad/300/200",
-              type: "lunch",
-              fats: 9,
-              fiber: 5,
-              carbohydrates: 26,
-              protein: 32,
-            }}
-          />
+          {!meal.isLoading && !meal.isError && (
+            <MealForm
+              task="update"
+              loadingButtonProps={{
+                loading: updateMeal.isPending,
+              }}
+              onSubmit={(values) => {
+                const mutatedValues = {
+                  ...values,
+                  types: values.types.map((ty) => ty.id),
+                };
+                updateMeal.mutate(mutatedValues);
+              }}
+              initialValues={{
+                ...meal?.data?.data,
+              }}
+            />
+          )}
         </Grid>
 
         <Grid size={12}>
@@ -103,8 +134,9 @@ const MealDetail = () => {
             </Typography>
             <DoupleClickToConfirm
               color="error"
+              loading={deleteMeal.isPending}
               onClick={() => {
-                console.log("clicked");
+                deleteMeal.mutate();
               }}
             >
               delete meal

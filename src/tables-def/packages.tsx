@@ -7,8 +7,8 @@ export interface Pricing {
   id: number;
   title: string;
   price: number;
-  numberOfDays: number;
-  packageId: number;
+  number_of_days: number;
+  package_id: number;
 }
 
 export interface Package {
@@ -19,31 +19,40 @@ export interface Package {
   pricings?: Pricing[];
 }
 
-export const pricingColumns: MRT_ColumnDef<Pricing>[] = [
-  {
-    accessorKey: "title",
-    header: "Title",
-  },
-  {
-    accessorKey: "price",
-    header: "Price (SAR)",
-    Cell: ({ cell }) => `SAR${cell.getValue<number>().toFixed(2)}`,
-  },
-  {
-    accessorKey: "numberOfDays",
-    header: "Number of Days",
-  },
-  {
-    id: "actions",
-    header: "Actions",
-    Cell: ({ row }) => (
-      <Stack flexDirection={"row"} gap={1}>
-        {/* <DeletePriceButton /> */}
-        <UpdatePriceButton price={row.original} />
-      </Stack>
-    ),
-  },
-];
+export const pricingColumns = (withActions = true) => {
+  let pricingColumns: MRT_ColumnDef<Pricing>[] = [
+    {
+      accessorKey: "title",
+      header: "Title",
+    },
+    {
+      accessorKey: "price",
+      header: "Price (SAR)",
+      Cell: ({ cell }) => `SAR${cell.getValue<number>().toFixed(2)}`,
+    },
+    {
+      accessorKey: "numberOfDays",
+      header: "Number of Days",
+    },
+  ];
+
+  if (withActions) {
+    pricingColumns = [
+      ...pricingColumns,
+      {
+        id: "actions",
+        header: "Actions",
+        Cell: ({ row }) => (
+          <Stack flexDirection={"row"} gap={1}>
+            <UpdatePriceButton price={row.original} />
+          </Stack>
+        ),
+      },
+    ];
+  }
+
+  return pricingColumns;
+};
 
 export const pricings: Pricing[] = [
   {
@@ -142,12 +151,5 @@ export const packages: Package[] = [
         packageId: 3,
       },
     ],
-  },
-  {
-    id: 4,
-    name: "New Package",
-    description: "Entry-level package for group coaching",
-    type: "group",
-    pricings: [],
   },
 ];

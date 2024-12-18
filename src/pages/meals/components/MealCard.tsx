@@ -14,6 +14,7 @@ import { Meal } from "../../../tables-def/meals";
 import { numberOfLines } from "../../../utils/maxLinesNumber";
 import { MdExpandCircleDown } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "../../../providers/AuthProvider";
 
 const MealCard = ({
   meal,
@@ -24,6 +25,8 @@ const MealCard = ({
   withAction?: boolean;
   withExtraInfo?: boolean;
 }) => {
+  const { user, base } = useAuthContext();
+  withAction = user?.role === "admin";
   return (
     <MainCard
       sx={{
@@ -64,14 +67,12 @@ const MealCard = ({
         {withExtraInfo && (
           <Box>
             <Typography variant="body2">protein : {meal.protein}</Typography>
-            <Typography variant="body2">
-              carbohydrates : {meal.carbohydrates}
-            </Typography>
+            <Typography variant="body2">carbohydrates : {meal.carb}</Typography>
             <Typography variant="body2">fats : {meal.fats}</Typography>
             <Typography variant="body2">fiber : {meal.fiber}</Typography>
             <Stack mt={1} flexDirection={"row"} gap={1} flexWrap={"wrap"}>
-              {meal.ingredients.map((ing) => {
-                return <Chip label={ing.title} />;
+              {meal.types.map((type) => {
+                return <Chip label={type.title} />;
               })}
             </Stack>
           </Box>
@@ -81,7 +82,7 @@ const MealCard = ({
         <CardActions disableSpacing>
           <IconButton
             component={Link}
-            to={`/admin/dashboard/meals/${meal.id}`}
+            to={`/${base}/dashboard/meals/${meal.id}`}
             sx={{
               transform: `rotate(-90deg)`,
               transition: "0.3s",

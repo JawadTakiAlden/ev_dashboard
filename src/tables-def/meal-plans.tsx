@@ -6,7 +6,7 @@ export interface MealPlan {
   calories: number;
   image: string;
   price_monthly: number;
-  meal_types: MealType[];
+  types: MealType[];
 }
 
 export const mealPlans: MealPlan[] = [

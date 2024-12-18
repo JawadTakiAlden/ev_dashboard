@@ -14,6 +14,7 @@ import {
 import { gridSpacing } from "../../../config";
 import { LoadingButton } from "@mui/lab";
 import Grid from "@mui/material/Grid2";
+import { FormLoadingButtonProps } from "../../../tables-def/loadingButtonProps";
 
 interface PackageFormProps {
   task?: "create" | "update";
@@ -27,8 +28,11 @@ interface PackageFormValues {
 
 const PackageForm = ({
   task = "create",
+  loadingButtonProps,
   ...formikConfig
-}: FormikConfig<PackageFormValues> & PackageFormProps) => {
+}: FormikConfig<PackageFormValues> &
+  PackageFormProps &
+  FormLoadingButtonProps) => {
   const {
     values,
     touched,
@@ -64,7 +68,7 @@ const PackageForm = ({
               <InputLabel>Package Description</InputLabel>
               <OutlinedInput
                 type="text"
-                name="name"
+                name="description"
                 label="Package Description"
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -104,7 +108,12 @@ const PackageForm = ({
           </Grid>
         </Grid>
 
-        <LoadingButton type="submit" variant="contained" disabled={!isValid}>
+        <LoadingButton
+          type="submit"
+          variant="contained"
+          disabled={!isValid}
+          {...loadingButtonProps}
+        >
           {task}
         </LoadingButton>
       </form>

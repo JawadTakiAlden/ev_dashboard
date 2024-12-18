@@ -14,6 +14,7 @@ import {
 import MainCard from "../../../components/MainCard";
 import { Link } from "react-router-dom";
 import { MdDeleteOutline, MdUpdate } from "react-icons/md";
+import { useAuthContext } from "../../../providers/AuthProvider";
 
 const ExcerciseCard = ({
   exercise,
@@ -24,6 +25,7 @@ const ExcerciseCard = ({
   noActions?: boolean;
   withBorder?: boolean;
 }) => {
+  const { base } = useAuthContext();
   return (
     <Box sx={{ height: "100%" }}>
       <MainCard
@@ -84,7 +86,7 @@ const ExcerciseCard = ({
                 size="small"
                 color="primary"
                 component={Link}
-                to={`/admin/dashboard/exercises/${exercise.id}`}
+                to={`/${base}/dashboard/exercises/${exercise.id}`}
               >
                 More
               </Button>
@@ -92,7 +94,7 @@ const ExcerciseCard = ({
             <Tooltip title={"update exercise"}>
               <IconButton
                 component={Link}
-                to={`/admin/dashboard/exercises/${exercise.id}?task=settings`}
+                to={`/${base}/dashboard/exercises/${exercise.id}?task=settings`}
                 color="info"
               >
                 <MdUpdate />
@@ -101,7 +103,7 @@ const ExcerciseCard = ({
             <Tooltip title={"delete exercise"}>
               <IconButton
                 component={Link}
-                to={`/admin/dashboard/exercises/${exercise.id}?task=settings`}
+                to={`/${base}/dashboard/exercises/${exercise.id}?task=settings`}
                 color="error"
               >
                 <MdDeleteOutline />

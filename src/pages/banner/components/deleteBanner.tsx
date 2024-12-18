@@ -10,8 +10,12 @@ import {
   IconButton,
 } from "@mui/material";
 import { MdDeleteSweep } from "react-icons/md";
+import { BannerModel } from "../../../tables-def/banner";
+import { LoadingButton } from "@mui/lab";
+import { useDeleteBanner } from "../../../api/banner";
 
-const DeleteBanner = () => {
+const DeleteBanner = ({ banner }: { banner: BannerModel }) => {
+  const deleteBanner = useDeleteBanner();
   return (
     <PopupButton
       title="delete banner"
@@ -35,12 +39,20 @@ const DeleteBanner = () => {
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleClose} variant="outlined" color="primary">
-                Confirm
-              </Button>
               <Button onClick={handleClose} variant="outlined" color="error">
                 Cancel
               </Button>
+              <LoadingButton
+                onClick={async () => {
+                  await deleteBanner.mutateAsync(banner.id);
+                  handleClose();
+                }}
+                variant="outlined"
+                loading={deleteBanner.isPending}
+                color="primary"
+              >
+                Confirm
+              </LoadingButton>
             </DialogActions>
           </Dialog>
         );

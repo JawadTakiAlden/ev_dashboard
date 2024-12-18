@@ -1,4 +1,4 @@
-import { alpha, Box, IconButton } from "@mui/material";
+import { alpha, Box, IconButton, Stack } from "@mui/material";
 import React, { ReactNode } from "react";
 import ModeSwitch from "../../components/ModeSwitch";
 import Sidebar from "../../components/Navigations";
@@ -7,6 +7,7 @@ import { useSidebar } from "../../store/sidebarStore";
 import { LogoIcon } from "../../components/Logo";
 import { MenuItemObject } from "../../menu-items";
 import { MdFullscreen } from "react-icons/md";
+import ProfileSection from "./ProfileSection";
 
 const DashboardLayout = ({
   children,
@@ -50,7 +51,7 @@ const DashboardLayout = ({
             </IconButton>
             <LogoIcon logoWidth="30px" />
           </Box>
-          <Box>
+          <Stack flexDirection={"row"} gap={1} alignItems={"center"}>
             <IconButton
               sx={{ mr: 1, display: { xs: "inline-flex", lg: "none" } }}
               onClick={handelSwitch}
@@ -72,9 +73,9 @@ const DashboardLayout = ({
             >
               <MdFullscreen />
             </IconButton>
-
             <ModeSwitch />
-          </Box>
+            <ProfileSection />
+          </Stack>
         </Box>
         <Box
           component={"main"}
