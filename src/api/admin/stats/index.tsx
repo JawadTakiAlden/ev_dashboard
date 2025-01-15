@@ -34,6 +34,20 @@ export const useGetRenwalStats = () => {
 
   return query;
 };
+export const useGetRenwalFoodStats = () => {
+  const getStats = (): Promise<AxiosResponse<any>> => {
+    return request({
+      url: "/stats/meal-renewal-chart",
+    });
+  };
+
+  const query = useQuery({
+    queryKey: ["get-meal-renwal-stats"],
+    queryFn: getStats,
+  });
+
+  return query;
+};
 
 export const useGetNewSignups = () => {
   const getStats = (): Promise<

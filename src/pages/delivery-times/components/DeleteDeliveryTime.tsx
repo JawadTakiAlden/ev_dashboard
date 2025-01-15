@@ -41,10 +41,10 @@ const DeleteDeliveryTime = ({
             </DialogTitle>
             <DialogContent>
               <DialogContentText>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum
-                hic a quos modi tempora eveniet ea numquam similique facere
-                nihil. Eius in eum sed deserunt quae corporis adipisci nisi
-                minima?
+                Are you sure you want to delete the delivery time titled "
+                {deliveryTime.title}"? This action cannot be undone, and all
+                associated information will be permanently removed from the
+                system.
               </DialogContentText>
             </DialogContent>
             <DialogActions>

@@ -32,13 +32,12 @@ const DeleteMealType = ({ mealType }: { mealType: MealType }) => {
       DialogRender={({ props, handleClose }) => {
         return (
           <Dialog {...props}>
-            <DialogTitle>Delete " {mealType.title} " confirmation</DialogTitle>
+            <DialogTitle>Confirm Deletion of "{mealType.title}"</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum
-                hic a quos modi tempora eveniet ea numquam similique facere
-                nihil. Eius in eum sed deserunt quae corporis adipisci nisi
-                minima?
+                Are you sure you want to delete the meal type "{mealType.title}
+                "? This action cannot be undone and will permanently remove the
+                meal type from the system.
               </DialogContentText>
             </DialogContent>
             <DialogActions>

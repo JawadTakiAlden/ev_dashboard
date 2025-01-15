@@ -37,14 +37,13 @@ const DeleteMealIngrediant = ({
         return (
           <Dialog {...props}>
             <DialogTitle>
-              Delete " {mealIngrediant.title} " confirmation
+              Confirm Deletion of "{mealIngrediant.title}"
             </DialogTitle>
             <DialogContent>
               <DialogContentText>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum
-                hic a quos modi tempora eveniet ea numquam similique facere
-                nihil. Eius in eum sed deserunt quae corporis adipisci nisi
-                minima?
+                Are you sure you want to delete the ingredient "
+                {mealIngrediant.title}"? This action cannot be undone and will
+                permanently remove the ingredient from the system.
               </DialogContentText>
             </DialogContent>
             <DialogActions>

@@ -82,3 +82,44 @@ export const useCancelFitnessSubscription = () => {
 
   return mutation;
 };
+
+export const useGetFitnessSubscriptionStats = (type : string = 'group') => {
+  const getFitnessSubscriptionStats = () => {
+    return request({
+      url : '/stats/activeFitnessSubscriptions',
+      params : {
+        type
+      }
+    })
+  }
+
+
+  const query = useQuery({
+    queryKey : [`get-fitness-subscriptions-${type}`],
+    queryFn : getFitnessSubscriptionStats
+  })
+
+
+  return query
+  
+}
+
+
+
+export const useGetActiveMealsSubscriptionStats = () => {
+  const getFitnessSubscriptionStats = () => {
+    return request({
+      url : '/stats/activeMealsSubscriptions',
+    })
+  }
+
+
+  const query = useQuery({
+    queryKey : [`get-active-meals-subscriptions`],
+    queryFn : getFitnessSubscriptionStats
+  })
+
+
+  return query
+  
+}

@@ -72,7 +72,9 @@ const RenewalAndCancelationBarChartAnalysis = ({
         yaxis: {
           labels: {
             style: {
-              colors: [theme.palette.text.primary],
+              colors: Array(renewalData?.length).fill(
+                theme.palette.text.primary
+              ),
             },
           },
         },

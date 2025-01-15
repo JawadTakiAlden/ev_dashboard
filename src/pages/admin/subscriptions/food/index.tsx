@@ -7,6 +7,8 @@ import SectionTitle from "../../../../components/SectionTitle";
 import Grid from "@mui/material/Grid2";
 import Loadable from "../../../../components/Loadable";
 import JustInViewRender from "../../../../components/JustInViewRender";
+import { useGetActiveMealsSubscriptionStats } from "../../../../api/subscriptions";
+import { useGetRenwalFoodStats } from "../../../../api/admin/stats";
 
 const RenewalAndCancelationBarChartAnalysis = Loadable(
   lazy(() => import("../components/RenewalAndCancelationBarChartAnalysis"))
@@ -16,6 +18,15 @@ const RenewalAndCancelationLineChartAnalysis = Loadable(
 );
 
 const FoodSubscriptions = () => {
+  const mealSubscription = useGetActiveMealsSubscriptionStats();
+  const mealRenwalSubscription = useGetRenwalFoodStats();
+
+  const xaxis = mealSubscription?.data?.data?.xaxis || [];
+  const data = mealSubscription?.data?.data?.subscription_data || [];
+  let FinalData = data.map((num: number, i: number) => ({
+    y: num,
+    x: xaxis[i],
+  }));
   return (
     <Box>
       <FoodSubscriptionTable />
@@ -31,28 +42,7 @@ const FoodSubscriptions = () => {
               <SectionTitle sx={{ color: "text.primary" }}>
                 Food Subscriptions analysis
               </SectionTitle>
-              <RenewalAndCancelationBarChartAnalysis
-                renewalData={[
-                  { x: "2010", y: Math.floor(Math.random() * 100) },
-                  { x: "2012", y: Math.floor(Math.random() * 100) },
-                  { x: "2013", y: Math.floor(Math.random() * 100) },
-                  { x: "2014", y: Math.floor(Math.random() * 100) },
-                  { x: "2015", y: Math.floor(Math.random() * 100) },
-                  { x: "2016", y: Math.floor(Math.random() * 100) },
-                  { x: "2017", y: Math.floor(Math.random() * 100) },
-                  { x: "2018", y: Math.floor(Math.random() * 100) },
-                ]}
-                cacelationData={[
-                  { x: "2010", y: Math.floor(Math.random() * 100) },
-                  { x: "2011", y: Math.floor(Math.random() * 100) },
-                  { x: "2012", y: Math.floor(Math.random() * 100) },
-                  { x: "2013", y: Math.floor(Math.random() * 100) },
-                  { x: "2014", y: Math.floor(Math.random() * 100) },
-                  { x: "2015", y: Math.floor(Math.random() * 100) },
-                  { x: "2016", y: Math.floor(Math.random() * 100) },
-                  { x: "2016", y: Math.floor(Math.random() * 100) },
-                ]}
-              />
+              <RenewalAndCancelationBarChartAnalysis renewalData={FinalData} />
             </MainCard>
           </JustInViewRender>
         </Grid>
@@ -60,29 +50,14 @@ const FoodSubscriptions = () => {
           <JustInViewRender>
             <MainCard>
               <SectionTitle sx={{ color: "text.primary" }}>
-                Food Subscriptions analysis
+                Food Subscriptions Renewal
               </SectionTitle>
               <RenewalAndCancelationLineChartAnalysis
-                categories={[
-                  "Jan",
-                  "Feb",
-                  "Mar",
-                  "Apr",
-                  "May",
-                  "Jun",
-                  "Jul",
-                  "Aug",
-                  "Sep",
-                  "Oct",
-                  "Nov",
-                  "Dec",
-                ]}
-                renewalData={Array.from({ length: 12 }, () =>
-                  Math.floor(Math.random() * 100)
-                )}
-                cacelationData={Array.from({ length: 12 }, () =>
-                  Math.floor(Math.random() * 100)
-                )}
+                categories={mealRenwalSubscription?.data?.data?.xaxis || []}
+                isLoading={mealRenwalSubscription.isLoading}
+                renewalData={
+                  mealRenwalSubscription?.data?.data?.renewal_data || []
+                }
               />
             </MainCard>
           </JustInViewRender>

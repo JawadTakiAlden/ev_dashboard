@@ -35,7 +35,7 @@ const FitnessSubscriptions = () => {
         <Grid size={{ xs: 12, sm: 6 }}>
           <MainCard>
             <SectionTitle sx={{ color: "text.primary" }}>
-              Fitness Subscriptions analysis
+              Fitness Subscriptions Renewal
             </SectionTitle>
             <FitnessSubscriptionsLineAnalysis />
           </MainCard>

@@ -29,13 +29,12 @@ const DeletePriceButton = ({ price }: { price: PriceModel }) => {
       DialogRender={({ props, handleClose }) => {
         return (
           <Dialog {...props}>
-            <DialogTitle>Delete " {price.title} " confirmation</DialogTitle>
+            <DialogTitle>Confirm Deletion of "{price.title}"</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum
-                hic a quos modi tempora eveniet ea numquam similique facere
-                nihil. Eius in eum sed deserunt quae corporis adipisci nisi
-                minima?
+                Are you sure you want to delete the price entry "{price.title}"?
+                This action is irreversible and will permanently remove the
+                price entry from the system.
               </DialogContentText>
             </DialogContent>
             <DialogActions>
