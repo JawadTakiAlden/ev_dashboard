@@ -17,7 +17,6 @@ import FileImagePicker from "../../../components/FileImagePicker";
 import { LoadingButton } from "@mui/lab";
 import useGetTypes from "../../../api/type/useGetTypes";
 import { FormLoadingButtonProps } from "../../../tables-def/loadingButtonProps";
-
 interface MealPlanFormVlaues {
   title: string;
   calories: number | undefined;
@@ -175,7 +174,6 @@ const MealPlanForm = ({
                     getOptionLabel={(option) => option.title}
                     onChange={(e, newVlaue) => {
                       setFieldValue("types", newVlaue);
-                      console.log(newVlaue);
                     }}
                     value={values.types}
                     loading={mealTypes.isLoading}

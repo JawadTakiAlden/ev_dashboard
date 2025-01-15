@@ -1,9 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { request } from "../baseRequest";
+import { request, ServerResponse } from "../baseRequest";
 import { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router";
 import { useAuthContext } from "../../providers/AuthProvider";
+import { Meal } from "../../tables-def/meals";
 
 export const useCreateMeal = () => {
   const createMeal = (data: any) => {
@@ -36,7 +37,7 @@ export const useCreateMeal = () => {
 };
 
 export const useGetMeals = () => {
-  const getMeals = () => {
+  const getMeals = (): Promise<AxiosResponse<Meal[]>> => {
     return request({
       url: "/admin/meals",
     });
@@ -122,4 +123,47 @@ export const useUpdateMeal = () => {
   });
 
   return mutation;
+};
+
+export const useAssignMealsToDay = () => {
+  const assignMealsToDay = (data: any) => {
+    return request({
+      url: "/admin/assign-meals",
+      method: "post",
+      data,
+    });
+  };
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationKey: ["assign-meals-to-days"],
+    mutationFn: assignMealsToDay,
+    onSuccess: (res: AxiosResponse) => {
+      toast(res.data.message);
+      queryClient.refetchQueries({
+        queryKey: [`get-meals-of-week`],
+      });
+    },
+    onError: (err: AxiosError<ServerResponse>) => {
+      toast(err?.response?.data.message);
+    },
+  });
+
+  return mutation;
+};
+
+export const useGetMealsOfWeek = () => {
+  const getMealsOfWeek = (): Promise<
+    AxiosResponse<{ day: { day: string }; meals: { id: number }[] }[]>
+  > => {
+    return request({
+      url: "/admin/week-meals",
+    });
+  };
+
+  const query = useQuery({
+    queryKey: ["get-meals-of-week"],
+    queryFn: getMealsOfWeek,
+  });
+
+  return query;
 };

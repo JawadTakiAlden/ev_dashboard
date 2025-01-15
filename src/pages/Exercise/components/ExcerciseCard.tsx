@@ -43,7 +43,7 @@ const ExcerciseCard = ({
           component="img"
           loading="lazy"
           height="194"
-          image={exercise.image_url}
+          image={exercise.image_urls?.[0]}
         />
         <CardContent>
           <Typography

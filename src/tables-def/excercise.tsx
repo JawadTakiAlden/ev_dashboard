@@ -3,11 +3,12 @@ export interface Exercise {
   name: string;
   description?: string;
   duration?: number;
-  image_url?: string;
+  image_urls?: string[];
   target_muscles_image?: string;
   video_url?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  notes: string[];
 }
 
 export const exercises: Exercise[] = [

@@ -1,5 +1,5 @@
 import React from "react";
-import { SurveyQuestionModel } from "../../../tables-def/surveyQuestions";
+import { SurveyDataModel } from "../../../tables-def/surveyQuestions";
 import PopupButton from "../../../components/PopupButton";
 import {
   Dialog,
@@ -10,8 +10,10 @@ import {
 } from "@mui/material";
 import QuestionForm from "../components/QuestionForm";
 import { CiEdit } from "react-icons/ci";
+import { useUpdateQuestion } from "../../../api/surveys";
 
-const UpdateQuestion = ({ question }: { question: SurveyQuestionModel }) => {
+const UpdateQuestion = ({ question }: { question: SurveyDataModel }) => {
+  const updateQuestion = useUpdateQuestion();
   return (
     <PopupButton
       title="Delete question"
@@ -22,7 +24,7 @@ const UpdateQuestion = ({ question }: { question: SurveyQuestionModel }) => {
           </IconButton>
         );
       }}
-      DialogRender={({ props }) => {
+      DialogRender={({ props, handleClose }) => {
         return (
           <Dialog {...props}>
             <DialogTitle>Update Question</DialogTitle>
@@ -33,11 +35,12 @@ const UpdateQuestion = ({ question }: { question: SurveyQuestionModel }) => {
               <QuestionForm
                 task="update"
                 onSubmit={(values) => {
-                  console.log(values);
+                  updateQuestion.mutateAsync({ id: question.id, data: values });
+                  handleClose();
                 }}
                 initialValues={{
-                  question: question.question,
-                  question_image: question.image,
+                  ...question,
+                  choices: question.choices?.map((choice) => choice.text),
                 }}
               />
             </DialogContent>

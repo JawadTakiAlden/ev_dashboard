@@ -11,8 +11,12 @@ import {
 } from "@mui/material";
 import { MdDeleteSweep } from "react-icons/md";
 import { Survey } from "../../../tables-def/survey";
+import { useDeleteSurvey } from "../../../api/surveys";
+import { LoadingButton } from "@mui/lab";
 
 const DeleteSurvey = ({ survey }: { survey: Survey }) => {
+  const deleteSurvey = useDeleteSurvey();
+
   return (
     <PopupButton
       title="delete Survey"
@@ -37,13 +41,16 @@ const DeleteSurvey = ({ survey }: { survey: Survey }) => {
               <Button onClick={handleClose} variant="contained" color={"error"}>
                 Cancel
               </Button>
-              <Button
-                onClick={handleClose}
+              <LoadingButton
+                onClick={() => {
+                  deleteSurvey.mutate(survey.id);
+                }}
                 variant="outlined"
                 color={"success"}
+                loading={deleteSurvey.isPending}
               >
                 Confirm
-              </Button>
+              </LoadingButton>
             </DialogActions>
           </Dialog>
         );

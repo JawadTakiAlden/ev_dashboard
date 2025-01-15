@@ -1,7 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
+import { MessageResponse } from "./MessageRenderer";
 
-const JustifyEndMessage = () => {
+const JustifyEndMessage = ({ message }: { message: MessageResponse }) => {
   return (
     <Box
       sx={{
@@ -14,14 +15,11 @@ const JustifyEndMessage = () => {
           maxWidth: "70%",
           p: 1,
           borderRadius: "10px",
-          backgroundColor: (theme) => theme.palette.background.default,
-          color: (theme) => theme.palette.text.primary,
+          backgroundColor: (theme) => theme.palette.primary.main,
+          color: (theme) => theme.palette.primary.contrastText,
         }}
       >
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum
-        sapiente est beatae laboriosam nesciunt similique culpa, velit,
-        perferendis eveniet nihil, ea porro autem perspiciatis accusamus dicta
-        ratione. Dolores, quisquam architecto!
+        {message.content}
       </Typography>
     </Box>
   );

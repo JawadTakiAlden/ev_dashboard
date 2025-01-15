@@ -110,8 +110,32 @@ const MealDetail = () => {
                 const mutatedValues = {
                   ...values,
                   types: values.types.map((ty) => ty.id),
+                  ingredients: values.ingredients.map((ty) => ty.id),
                 };
-                updateMeal.mutate(mutatedValues);
+                const mealFormData = new FormData();
+                mealFormData.append("name", mutatedValues.name);
+                mealFormData.append("description", mutatedValues.description);
+                mealFormData.append("carb", values.carb.toString());
+                mutatedValues.ingredients.map((ingre, i) =>
+                  mealFormData.append(`ingredients[${i}]`, ingre.toString())
+                );
+                mutatedValues.types.map((type, i) =>
+                  mealFormData.append(`types[${i}]`, type.toString())
+                );
+                mealFormData.append(
+                  "calories",
+                  mutatedValues.calories.toString()
+                );
+                mealFormData.append("fats", mutatedValues.fats.toString());
+                mealFormData.append("fiber", mutatedValues.fiber.toString());
+                mealFormData.append(
+                  "protein",
+                  mutatedValues.protein.toString()
+                );
+                mutatedValues.images.map((image) =>
+                  mealFormData.append("images", image)
+                );
+                updateMeal.mutate(mealFormData);
               }}
               initialValues={{
                 ...meal?.data?.data,

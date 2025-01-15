@@ -7,8 +7,12 @@ import {
   DialogTitle,
 } from "@mui/material";
 import QuestionForm from "../components/QuestionForm";
+import { useCreateQuestion } from "../../../api/surveys";
+import { useParams } from "react-router";
 
 const CreateQuestion = () => {
+  const { surveyId } = useParams();
+  const createQuestion = useCreateQuestion();
   return (
     <PopupButton
       title="create question"
@@ -22,11 +26,20 @@ const CreateQuestion = () => {
               </DialogContentText>
               <QuestionForm
                 onSubmit={(values) => {
-                  console.log(values);
+                  createQuestion.mutateAsync({
+                    ...values,
+                    survey_id: surveyId,
+                  });
+                  handleClose();
+                }}
+                loadingButtonProps={{
+                  loading: createQuestion.isPending,
                 }}
                 initialValues={{
-                  question: "",
-                  question_image: null,
+                  title: "",
+                  image: null,
+                  type: "normal",
+                  choices: [],
                 }}
               />
             </DialogContent>

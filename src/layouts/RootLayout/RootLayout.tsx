@@ -2,7 +2,6 @@ import { Box } from "@mui/material";
 import { Outlet } from "react-router";
 import useMount from "../../hooks/useMount";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
-import ScrollOnNavigate from "../../components/ScrollOnNavigate";
 import { AuthContextProvider } from "../../providers/AuthProvider";
 
 const RootLayout = () => {
@@ -14,11 +13,11 @@ const RootLayout = () => {
 
   return (
     <Box>
-      <ScrollOnNavigate>
-        <AuthContextProvider>
-          <Outlet />
-        </AuthContextProvider>
-      </ScrollOnNavigate>
+      {/* <ScrollOnNavigate> */}
+      <AuthContextProvider>
+        <Outlet />
+      </AuthContextProvider>
+      {/* </ScrollOnNavigate> */}
     </Box>
   );
 };

@@ -44,8 +44,46 @@ export const useCreateExercise = () => {
   return { createExercice: mutation, progress };
 };
 
+export const useUpdateExercise = () => {
+  const [progress, setProgress] = useState(0);
+  const { exerciseID } = useParams();
+  const updateExercise = (data: any) => {
+    return request({
+      url: `/coach/exercise/${exerciseID}`,
+      method: "put",
+      onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total!
+        );
+        setProgress(percentCompleted);
+      },
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      data,
+    });
+  };
+
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationKey: ["update-exercise"],
+    mutationFn: updateExercise,
+    onSuccess: (res: AxiosResponse) => {
+      toast(res.data.message);
+      queryClient.refetchQueries({
+        queryKey: [`show-exercise-${exerciseID}`],
+      });
+    },
+    onError: (err: AxiosError) => {
+      console.log(err);
+    },
+  });
+
+  return { updateExercice: mutation, progress };
+};
+
 export const useGetExercises = () => {
-  const getExercises = () => {
+  const getExercises = (): Promise<AxiosResponse<Exercise[]>> => {
     return request({
       url: "/coach/exercise",
     });

@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import ExerciseForm from "../components/ExerciseForm";
 import { useCreateExercise } from "../../../api/exercise";
 
@@ -11,8 +11,20 @@ const CreateExcercise = () => {
         task="create"
         progress={progress}
         onSubmit={(values) => {
-          console.log(values);
-          createExercice.mutate(values);
+          const exerciseFormData = new FormData();
+          exerciseFormData.append("name", values.name);
+          exerciseFormData.append("description", values.description);
+          // exerciseFormData.append("duration", values.duration.toString());
+          exerciseFormData.append("notes", JSON.stringify(values.notes));
+          exerciseFormData.append(
+            "target_muscles_image",
+            values.target_muscles_image as Blob
+          );
+          exerciseFormData.append("video", values.video as Blob);
+          values.images.map((image) =>
+            exerciseFormData.append("images", image)
+          );
+          createExercice.mutate(exerciseFormData);
         }}
         loadingButtonProps={{
           loading: createExercice.isPending,
@@ -29,10 +41,10 @@ export default CreateExcercise;
 const initialValues = {
   name: "",
   description: "",
-  duration: 0,
-  image: null,
+  images: [],
   target_muscles_image: null,
   video: null,
+  notes: [],
 };
 
 export const validationSchema = Yup.object().shape({
@@ -42,11 +54,12 @@ export const validationSchema = Yup.object().shape({
   description: Yup.string()
     .nullable()
     .max(1000, "Description must be at most 1000 characters"),
-  duration: Yup.number()
-    .nullable()
-    .positive("Duration must be a positive number")
-    .integer("Duration must be an integer"),
-  image: Yup.mixed().required().label("Image"),
+  // duration: Yup.number()
+  //   .nullable()
+  //   .positive("Duration must be a positive number")
+  //   .integer("Duration must be an integer"),
+  images: Yup.array().required().label("Image"),
   target_muscles_image: Yup.mixed().required().label("Target muscles image"),
+  notes: Yup.array().required().label("Notes"),
   video: Yup.mixed().required().label("Exercise Video"),
 });

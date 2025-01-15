@@ -1,10 +1,9 @@
-import { alpha, Box, Chip, Link, Stack, Typography } from "@mui/material";
+import { alpha, Box, Chip, Stack, Typography } from "@mui/material";
 import React, { memo } from "react";
 import Grid from "@mui/material/Grid2";
 import { gridSpacing } from "../../../config";
-import { WorkoutCompletion, workoutDetail } from "../../../tables-def/workout";
+import { WorkoutDetail } from "../../../tables-def/workout";
 import MainCard from "../../../components/MainCard";
-import { Link as BaseLink } from "react-router-dom";
 import DeleteTypography from "../../../components/DeleteTypography";
 import {
   areEqual,
@@ -19,46 +18,51 @@ const Exercise: React.FC<ListChildComponentProps> = memo(
     <div style={{ ...style, width: "300px" }} key={index}>
       <ExcerciseCard
         noActions={!data.withAction}
-        exercise={data.exercises[index].exercise}
+        exercise={data.exercises[index]}
       />
     </div>
   ),
   areEqual
 );
 
-const CompletionCard = ({ completion }: { completion: WorkoutCompletion }) => {
-  return (
-    <MainCard cardContent={false} sx={{ p: 2, width: "250px" }} border={false}>
-      <Stack justifyContent={"center"} alignItems={"center"} gap={4}>
-        <Link
-          component={BaseLink}
-          variant="h5"
-          to={`/dashboard/users/${completion.user.id}`}
-        >
-          {completion.user.name}
-        </Link>
-        <Typography variant="h6">{completion.createdAt}</Typography>
-      </Stack>
-    </MainCard>
-  );
-};
+// const CompletionCard = ({ completion }: { completion: WorkoutCompletion }) => {
+//   return (
+//     <MainCard cardContent={false} sx={{ p: 2, width: "250px" }} border={false}>
+//       <Stack justifyContent={"center"} alignItems={"center"} gap={4}>
+//         <Link
+//           component={BaseLink}
+//           variant="h5"
+//           to={`/dashboard/users/${completion.user.id}`}
+//         >
+//           {completion.user.name}
+//         </Link>
+//         <Typography variant="h6">{completion.createdAt}</Typography>
+//       </Stack>
+//     </MainCard>
+//   );
+// };
 
-const Completion: React.FC<ListChildComponentProps> = memo(
-  ({ index, style, data }) => (
-    <div style={{ ...style }} key={index}>
-      <CompletionCard completion={data.completions[index]} />
-    </div>
-  ),
-  areEqual
-);
+// const Completion: React.FC<ListChildComponentProps> = memo(
+//   ({ index, style, data }) => (
+//     <div style={{ ...style }} key={index}>
+//       <CompletionCard completion={data.completions[index]} />
+//     </div>
+//   ),
+//   areEqual
+// );
 
 const createItemData = memoize((items) => ({
   items,
 }));
 
-const WorkOutDetailPage = ({ withAction = true }: { withAction?: boolean }) => {
-  const exercises = createItemData(workoutDetail.exercises);
-  const completions = createItemData(workoutDetail.workout_completion);
+const WorkOutDetailPage = ({
+  withAction = true,
+  workout,
+}: {
+  withAction?: boolean;
+  workout: WorkoutDetail;
+}) => {
+  const exercises = createItemData(workout.exercises);
   return (
     <Box>
       <Grid container spacing={gridSpacing}>
@@ -72,19 +76,19 @@ const WorkOutDetailPage = ({ withAction = true }: { withAction?: boolean }) => {
             >
               <Box flex={2}>
                 <Typography mb={1} variant="h3">
-                  {workoutDetail.title}
+                  {workout.title}
                 </Typography>
                 <Typography variant="h5" mb={1}>
-                  {workoutDetail.description}
+                  {workout.description}
                 </Typography>
-                <Typography>
+                {/* <Typography>
                   Coach :{" "}
-                  {workoutDetail.type === "group" && (
+                  {workout.type === "group" && (
                     <Link
                       component={BaseLink}
                       color="textPrimary"
                       variant="body1"
-                      to={`/dashboard/users/${workoutDetail.user?.id}`}
+                      to={`/dashboard/users/${workout.user_id}`}
                     >
                       {workoutDetail.coach}
                     </Link>
@@ -102,14 +106,12 @@ const WorkOutDetailPage = ({ withAction = true }: { withAction?: boolean }) => {
                       {workoutDetail.user?.name}
                     </Link>
                   )}
-                </Typography>
+                </Typography> */}
               </Box>
               <Box flex={1}>
                 <Chip
-                  color={
-                    workoutDetail.type === "group" ? "primary" : "secondary"
-                  }
-                  label={workoutDetail.type}
+                  color={workout.type === "group" ? "primary" : "secondary"}
+                  label={workout.type}
                   sx={{ borderRadius: "4px", mb: 1 }}
                 />
 
@@ -122,7 +124,7 @@ const WorkOutDetailPage = ({ withAction = true }: { withAction?: boolean }) => {
                     mb: 1,
                   }}
                 >
-                  Level : {workoutDetail.difficulty_level}
+                  Level : {workout.difficulty_level}
                 </Typography>
                 <Typography
                   sx={{
@@ -133,7 +135,7 @@ const WorkOutDetailPage = ({ withAction = true }: { withAction?: boolean }) => {
                     mb: 1,
                   }}
                 >
-                  expeced duration : {workoutDetail.duration}
+                  expeced duration : {workout.duration}
                 </Typography>
                 <Typography
                   sx={{
@@ -144,7 +146,7 @@ const WorkOutDetailPage = ({ withAction = true }: { withAction?: boolean }) => {
                     mb: 1,
                   }}
                 >
-                  created at : {workoutDetail.date}
+                  created at : {workout.createdAt}
                 </Typography>
               </Box>
             </Stack>
@@ -162,7 +164,7 @@ const WorkOutDetailPage = ({ withAction = true }: { withAction?: boolean }) => {
           </DeleteTypography>
           <Grid container spacing={gridSpacing} alignItems={"stretch"}>
             <List
-              itemCount={workoutDetail.exercises.length}
+              itemCount={workout.exercises.length}
               itemSize={310}
               height={400}
               width={1000}
@@ -176,7 +178,7 @@ const WorkOutDetailPage = ({ withAction = true }: { withAction?: boolean }) => {
             </List>
           </Grid>
         </Grid>
-        <Grid size={12}>
+        {/* <Grid size={12}>
           <DeleteTypography
             sx={{
               borderLeftColor: (theme) =>
@@ -210,7 +212,7 @@ const WorkOutDetailPage = ({ withAction = true }: { withAction?: boolean }) => {
           >
             {Completion}
           </List>
-        </Grid>
+        </Grid> */}
       </Grid>
     </Box>
   );

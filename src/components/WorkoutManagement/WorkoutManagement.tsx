@@ -1,24 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import Grid from "@mui/material/Grid2";
 import { gridSpacing } from "../../config";
-import { Box, Button, ListItemButton, Stack } from "@mui/material";
+import { Box, Button, ListItemButton, Stack, Typography } from "@mui/material";
 import { days } from "../../tables-def/days";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { WorkoutModel } from "../../tables-def/workout";
-import Workout from "../../pages/Workout";
 import { useAuthContext } from "../../providers/AuthProvider";
-
-interface WorkoutManagementData {
-  [key: string]: WorkoutModel[];
-}
+import WorkoutCard from "../../pages/Workout/components/WorkoutCard";
 
 const WorkoutManagement = ({
   type,
   user,
   targetPackage,
   data,
+  isLoading = false,
 }: {
   type: "group" | "personalized";
+  isLoading?: boolean;
   user?: {
     id: number;
     name: string;
@@ -27,7 +24,7 @@ const WorkoutManagement = ({
     id: number;
     name: string;
   };
-  data: WorkoutManagementData;
+  data: any;
 }) => {
   const daysContainerRef = useRef<HTMLDivElement>(null);
   const [activeDay, setActiveDay] = useState<string>("Saturday");
@@ -36,13 +33,13 @@ const WorkoutManagement = ({
   const day = searchParams.get("day") as string;
   const { base } = useAuthContext();
 
-  useEffect(() => {
-    if (!day) {
-      setActiveDay(days[0]);
-      searchParams.set("day", days[0]);
-      setSearchParams(searchParams);
-    }
-  }, [day, searchParams, setSearchParams]);
+  // useEffect(() => {
+  //   if (!day) {
+  //     setActiveDay(days[0]);
+  //     searchParams.set("day", days[0]);
+  //     setSearchParams(searchParams);
+  //   }
+  // }, [day, searchParams, setSearchParams]);
 
   useEffect(() => {
     setActiveDay(day);
@@ -109,7 +106,13 @@ const WorkoutManagement = ({
             </Button>
           </Grid>
           <Grid size={12}>
-            <Workout data={data[activeDay]} />
+            {isLoading ? (
+              <Typography textAlign={"center"}>Loading...</Typography>
+            ) : Object.keys(data).length !== 0 ? (
+              <WorkoutCard workout={data} />
+            ) : (
+              <Typography>No workout here yet</Typography>
+            )}
           </Grid>
         </Grid>
       </Grid>

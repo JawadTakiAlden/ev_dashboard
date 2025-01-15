@@ -1,11 +1,14 @@
 import { Box, Button, Typography } from "@mui/material";
 import Logo, { LogoIcon } from "../../components/Logo";
 import { useNavigate } from "react-router";
+import { useAuthContext } from "../../providers/AuthProvider";
+import { homepageMap } from "../../router/homepageMap";
 
 const NotFound404 = () => {
+  const { user } = useAuthContext();
   const navigate = useNavigate();
   const redirectHandeler = () => {
-    navigate("/auth/login");
+    navigate(homepageMap[user?.role as string]);
   };
   return (
     <Box

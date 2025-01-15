@@ -25,7 +25,7 @@ const ThemeProvider = ({ children }: BaseProviderInterface) => {
               backgroundColor: appTheme.palette.background.default,
             },
             "*::-webkit-scrollbar": {
-              width: "10px", // Width of the scrollbar
+              width: "5px", // Width of the scrollbar
               height: "10px", // Height of the scrollbar for horizontal scrolling
             },
             "*::-webkit-scrollbar-track": {

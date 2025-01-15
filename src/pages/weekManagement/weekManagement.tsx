@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid2";
 import {
   Avatar,
@@ -9,36 +9,43 @@ import {
   ListItemButton,
   Menu,
   MenuItem,
+  OutlinedInput,
   Stack,
   Typography,
 } from "@mui/material";
 import { gridSpacing } from "../../config";
 import { Meal } from "../../tables-def/meals";
-import { mealTypes } from "../../tables-def/meal-types";
 
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 import MealCard from "../meals/components/MealCard";
 import { IoFilterSharp } from "react-icons/io5";
 import MainCard from "../../components/MainCard";
 import { MdDeleteSweep } from "react-icons/md";
+import useGetTypes from "../../api/type/useGetTypes";
+import {
+  useAssignMealsToDay,
+  useGetMeals,
+  useGetMealsOfWeek,
+} from "../../api/meals";
+import { LoadingButton } from "@mui/lab";
 
 const ITEM_HEIGHT = 48;
 
 const days = [
-  "Saturday",
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
+  "saturday",
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
 ];
 
 const MiniItem = ({ meal }: { meal: Meal }) => {
   return (
     <MainCard border={false} sx={{ p: 0 }}>
       <Stack flexDirection={"row"} gap={1} alignItems={"center"}>
-        <Avatar variant="rounded" src={meal.image_url} />
+        <Avatar variant="rounded" src={meal.images[0]} />
         <Typography>{meal.name}</Typography>
       </Stack>
     </MainCard>
@@ -52,36 +59,66 @@ interface WeekManagmentStore {
 }
 
 const WeekManagement = () => {
-  const types = [{ id: 0, title: "All" }, ...mealTypes];
   const [day, setDay] = useState<string>(days[0]);
-  const [mealFilter, setMealFilter] = useState(types[0]);
+  const [mealFilter, setMealFilter] = useState<{ id: number; title: string }>({
+    id: 0,
+    title: "all",
+  });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const mealTypesQuery = useGetTypes();
+  const mealsQuery = useGetMeals();
+  const [search, setSearch] = useState<string>("");
 
   const [droppedMeals, setDroppedMeals] = useState<WeekManagmentStore>({
-    Saturday: {
+    saturday: {
       meals: [],
     },
-    Sunday: {
+    sunday: {
       meals: [],
     },
-    Monday: {
+    monday: {
       meals: [],
     },
-    Tuesday: {
+    tuesday: {
       meals: [],
     },
-    Wednesday: {
+    wednesday: {
       meals: [],
     },
-    Thursday: {
+    thursday: {
       meals: [],
     },
-    Friday: {
+    friday: {
       meals: [],
     },
   });
 
+  const assignMealsToDays = useAssignMealsToDay();
+  const mealsOfWeekQuery = useGetMealsOfWeek();
   const open = Boolean(anchorEl);
+
+  useEffect(() => {
+    if (!mealsOfWeekQuery.isLoading && !mealsOfWeekQuery.isError) {
+      // setDroppedMeals()
+      const transformedData = mealsOfWeekQuery.data?.data?.map(
+        (mealsOfWeek) => ({
+          [mealsOfWeek.day.day]: {
+            meals: mealsOfWeek.meals.map((meal) => meal.id),
+          },
+        })
+      );
+
+      const mergedData = transformedData?.reduce((acc, curr) => {
+        return { ...acc, ...curr };
+      }, {});
+
+      const sortedData = days.reduce((acc, cure) => {
+        return { ...acc, [cure]: { meals: mergedData?.[cure].meals } };
+      }, {});
+
+      setDroppedMeals(sortedData);
+    }
+  }, [mealsOfWeekQuery.isLoading]);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -89,6 +126,18 @@ const WeekManagement = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const mealTypes = mealTypesQuery?.data?.data;
+
+  const assignMealsSubmit = () => {
+    const dataToSubmit = Object.keys(droppedMeals)
+      .map((day) => ({
+        day: day,
+        meal_ids: droppedMeals[day].meals,
+      }))
+      .filter((mealAssigment) => mealAssigment.meal_ids.length > 0);
+    assignMealsToDays.mutateAsync({ assignments: dataToSubmit });
   };
 
   const SelectableMeal = ({ index, style, data }: ListChildComponentProps) => {
@@ -132,7 +181,7 @@ const WeekManagement = () => {
               variant="outlined"
               endIcon={<IoFilterSharp />}
             >
-              {mealFilter.title}
+              {mealFilter?.title}
             </Button>
             <Menu
               id="basic-menu"
@@ -147,23 +196,72 @@ const WeekManagement = () => {
                 paper: {
                   style: {
                     maxHeight: ITEM_HEIGHT * 4.5,
-                    width: "20ch",
+                    // width: "20ch",
                   },
                 },
               }}
             >
-              {types.map((filter) => (
+              <MenuItem
+                sx={{
+                  position: "sticky",
+                  top: 0,
+                  backgroundColor: "grey.600",
+                  backgroundImage: "none",
+                  zIndex: 100,
+                  ":hover": {
+                    backgroundColor: "grey.700",
+                  },
+                }}
+                onClick={() => setMealFilter({ id: 0, title: "all" })}
+              >
+                All
+              </MenuItem>
+              {mealTypes?.map((filter) => (
                 <MenuItem onClick={() => setMealFilter(filter)}>
                   {filter.title}
                 </MenuItem>
               ))}
             </Menu>
           </div>
+          <OutlinedInput
+            fullWidth
+            sx={{ maxWidth: "350px", my: 1 }}
+            value={search}
+            type="text"
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+            placeholder="Burger"
+          />
           <Box>
             <List
               height={420}
-              itemCount={mealOptions.length}
-              itemData={mealOptions}
+              itemCount={
+                mealsQuery?.data?.data?.filter((meal) => {
+                  return (
+                    !droppedMeals[day].meals.includes(meal.id!) &&
+                    meal.name.includes(search) &&
+                    (mealFilter.id === 0
+                      ? true
+                      : meal.types.findIndex(
+                          (type) => type.id === mealFilter.id
+                        ) !== -1)
+                  );
+                })?.length || 0
+              }
+              itemData={
+                mealsQuery?.data?.data?.filter((meal) => {
+                  return (
+                    !droppedMeals[day].meals.includes(meal.id!) &&
+                    meal.name.includes(search) &&
+                    (mealFilter.id === 0
+                      ? true
+                      : meal.types.findIndex(
+                          (type) => type.id === mealFilter.id
+                        ) !== -1)
+                  );
+                }) || []
+              }
               itemSize={310}
               layout="horizontal"
               width={1000}
@@ -225,7 +323,9 @@ const WeekManagement = () => {
               >
                 <Stack flexDirection={"row"} flexWrap={"wrap"} gap={2}>
                   {droppedMeals[day]?.meals?.map((mealId) => {
-                    const meal = meals.find((m) => m.id === mealId);
+                    const meal = mealsQuery?.data?.data?.find(
+                      (m) => m.id === mealId
+                    );
                     return meal ? (
                       <Stack
                         flexDirection={"row"}
@@ -256,6 +356,18 @@ const WeekManagement = () => {
                 </Stack>
               </Box>
             </Grid>
+          </Grid>
+          <Grid size="auto">
+            <LoadingButton
+              sx={{
+                mt: 1,
+              }}
+              variant="contained"
+              loading={assignMealsToDays.isPending}
+              onClick={assignMealsSubmit}
+            >
+              Save Assigments
+            </LoadingButton>
           </Grid>
         </Grid>
       </Grid>

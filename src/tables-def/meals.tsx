@@ -6,7 +6,7 @@ export interface Meal {
   name: string;
   description?: string;
   calories: number;
-  image_url: string;
+  images: string[];
   types: MealType[];
   protein: number;
   carb?: number;

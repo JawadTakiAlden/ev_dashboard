@@ -56,6 +56,14 @@ export const AuthContextProvider = ({
         const user = res.data;
         setUser(user);
         setIsLoggedIn(true);
+
+        const availbleRoles = ["admin", "kitchen_staff", "coach"];
+
+        if (!availbleRoles.includes(user.role)) {
+          throw new Error(
+            "you are not have permission to get access to the dashboard"
+          );
+        }
         const pathname =
           location.pathname === "/"
             ? homepageMap[user.role]

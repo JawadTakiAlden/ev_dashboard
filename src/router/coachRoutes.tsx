@@ -31,7 +31,7 @@ export const coachRoutes: RouteObject = {
               path: "users",
               children: [
                 {
-                  path: ":id",
+                  path: ":userId",
                   element: <UserProfile />,
                 },
               ],

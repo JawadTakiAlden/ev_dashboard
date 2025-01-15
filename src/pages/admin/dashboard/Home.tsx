@@ -5,6 +5,7 @@ import { gridSpacing } from "../../../config";
 import StatisticCard from "../../../components/StatisticCard";
 import Loadable from "../../../components/Loadable";
 import { useGetStats } from "../../../api/admin/stats";
+import Notification from "../notification/notification";
 
 const SigninStatstics = Loadable(lazy(() => import("./SigninStatstics")));
 
@@ -22,7 +23,7 @@ const Home = () => {
               isLoss={false}
               percentage={20}
               loading={stats.isLoading}
-              title="Active fitness subscription"
+              title="Active Fitness Subscriptions"
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
@@ -31,7 +32,7 @@ const Home = () => {
               isLoss={false}
               percentage={20}
               loading={stats.isLoading}
-              title="Active meal subscription"
+              title="Active Meal Subscriptions"
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
@@ -40,7 +41,7 @@ const Home = () => {
               isLoss={false}
               percentage={20}
               loading={stats.isLoading}
-              title="New sign ups"
+              title="New Sign-Ups"
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
@@ -49,7 +50,7 @@ const Home = () => {
               isLoss
               percentage={20}
               loading={stats.isLoading}
-              title="Workout completion rate"
+              title="Workout Completion Rate"
             />
           </Grid>
         </Grid>
@@ -60,7 +61,7 @@ const Home = () => {
             <SigninStatstics />
           </Grid>
           <Grid size={{ xs: 12, sm: 5, md: 4 }}>
-            another chart in dashboard
+            <Notification />
           </Grid>
         </Grid>
       </Grid>

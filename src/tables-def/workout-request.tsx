@@ -79,7 +79,7 @@ export const workoutRequestsColumns: MRT_ColumnDef<WorkoutRequest>[] = [
     Cell: ({ row }) => (
       <Link
         component={BaseLink}
-        to={`/dashboard/users/${row.original.user.id}?package_id=${row.original.package.id}&day=Saturday`}
+        to={`/coach/dashboard/users/${row.original.user.id}?package_id=${row.original.package.id}&day=Saturday`}
         style={{
           textDecoration: "underline",
           cursor: "pointer",
@@ -94,7 +94,7 @@ export const workoutRequestsColumns: MRT_ColumnDef<WorkoutRequest>[] = [
     header: "Package Name",
   },
   {
-    accessorKey: "created_at",
+    accessorKey: "createdAt",
     header: "Created At",
     Cell: ({ cell }) => new Date(cell.getValue<string>()).toLocaleDateString(),
   },

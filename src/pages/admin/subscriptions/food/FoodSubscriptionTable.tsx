@@ -1,8 +1,6 @@
 import { useGetMealSubscription } from "../../../../api/subscriptions";
 import Table from "../../../../components/Table";
-import mealSubscriptions, {
-  mealSubscriptionColumns,
-} from "../../../../tables-def/meal-subscriptions";
+import { mealSubscriptionColumns } from "../../../../tables-def/meal-subscriptions";
 
 const FoodSubscriptionTable = () => {
   const mealSubscription = useGetMealSubscription();

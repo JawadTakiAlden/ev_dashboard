@@ -1,10 +1,25 @@
-import { alpha, Box } from "@mui/material";
+import { alpha, Box, Chip, Stack } from "@mui/material";
 import { MRT_ColumnDef } from "material-react-table";
 import JustInViewRender from "../components/JustInViewRender";
 
 export interface SurveyQuestionModel {
   question: string;
   image: string;
+  type: "normal" | "choice";
+  choices?: string[];
+}
+
+export interface SurveyDataModel {
+  id: number;
+  title: string;
+  image: string;
+  type: "normal" | "choice";
+  choices?: Choice[];
+}
+
+export interface Choice {
+  id: number;
+  text: string;
 }
 
 export const surveyQuestions: SurveyQuestionModel[] = [
@@ -50,41 +65,54 @@ export const surveyQuestions: SurveyQuestionModel[] = [
   },
 ];
 
-export const surveyQuestionsColumns: MRT_ColumnDef<SurveyQuestionModel, any>[] =
-  [
-    {
-      accessorKey: "question",
-      header: "Question",
-      maxSize: 200,
+export const surveyQuestionsColumns: MRT_ColumnDef<SurveyDataModel, any>[] = [
+  {
+    accessorKey: "title",
+    header: "Question",
+    maxSize: 200,
+  },
+  {
+    accessorKey: "choices",
+    header: "Choices",
+    maxSize: 200,
+    Cell: ({ row }) => {
+      return (
+        <Stack flexDirection={"row"} flexWrap={"wrap"} gap={1}>
+          {row.original.choices?.map((choice) => (
+            <Chip label={choice.text} color="default" />
+          ))}
+        </Stack>
+      );
     },
-    {
-      accessorKey: "image",
-      header: "Image",
-      Cell: ({ row }) => {
-        return (
-          <JustInViewRender>
-            <Box
-              sx={{
-                width: "100px",
-                height: "100px",
-                borderRadius: "10%",
-                overflow: "hidden",
-                backgroundColor: (theme) =>
-                  alpha(theme.palette.primary.main, 0.1),
+  },
+  {
+    accessorKey: "image",
+    header: "Image",
+    Cell: ({ row }) => {
+      return (
+        <JustInViewRender>
+          <Box
+            sx={{
+              width: "100px",
+              height: "100px",
+              borderRadius: "10%",
+              overflow: "hidden",
+              backgroundColor: (theme) =>
+                alpha(theme.palette.primary.main, 0.1),
+            }}
+          >
+            <img
+              alt={row.original.image}
+              src={row.original.image}
+              loading="lazy"
+              style={{
+                maxWidth: "100%",
+                objectFit: "contain",
               }}
-            >
-              <img
-                alt={row.original.image}
-                src={row.original.image}
-                loading="lazy"
-                style={{
-                  maxWidth: "100%",
-                  objectFit: "contain",
-                }}
-              />
-            </Box>
-          </JustInViewRender>
-        );
-      },
+            />
+          </Box>
+        </JustInViewRender>
+      );
     },
-  ];
+  },
+];

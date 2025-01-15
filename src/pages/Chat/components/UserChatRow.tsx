@@ -4,9 +4,27 @@ import { numberOfLines } from "../../../utils/maxLinesNumber";
 import useGetGetDarkValue from "../../../utils/useGetGetDarkValue";
 import { useChat } from "../Store/chatStore";
 
-const UserChatRow = () => {
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+export interface Record {
+  id: number;
+  user_id: number;
+  coach_id: number;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  lastMessage?: {
+    content: string;
+  };
+  user: User;
+}
+
+const UserChatRow = ({ chatRow }: { chatRow: Record }) => {
   const { getVlaue } = useGetGetDarkValue();
-  const { selectUser } = useChat();
+  const { selectUser, selectChat, setMessages } = useChat();
   return (
     <Stack
       flexDirection={"row"}
@@ -23,10 +41,9 @@ const UserChatRow = () => {
         },
       }}
       onClick={() => {
-        selectUser({
-          id: 1,
-          name: "jawad taki aldeen",
-        });
+        selectUser(chatRow.user);
+        selectChat(chatRow.id);
+        setMessages(null);
       }}
     >
       <Box>
@@ -39,7 +56,7 @@ const UserChatRow = () => {
             letterSpacing: "0.6px",
           }}
         >
-          jawad taki aldeen
+          {chatRow.user.name}
         </Typography>
         <Typography
           sx={{
@@ -47,7 +64,7 @@ const UserChatRow = () => {
             color: "grey.500",
           }}
         >
-          hi gues i want to tell you about something
+          {chatRow.lastMessage?.content}
         </Typography>
       </Box>
     </Stack>

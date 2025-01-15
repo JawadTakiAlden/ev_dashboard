@@ -1,5 +1,5 @@
 import React from "react";
-import { SurveyQuestionModel } from "../../../tables-def/surveyQuestions";
+import { SurveyDataModel } from "../../../tables-def/surveyQuestions";
 import PopupButton from "../../../components/PopupButton";
 import {
   Button,
@@ -11,8 +11,11 @@ import {
   IconButton,
 } from "@mui/material";
 import { MdDeleteSweep } from "react-icons/md";
+import { useDeleteQuestion } from "../../../api/surveys";
+import { LoadingButton } from "@mui/lab";
 
-const DeleteQuestion = ({ question }: { question: SurveyQuestionModel }) => {
+const DeleteQuestion = ({ question }: { question: SurveyDataModel }) => {
+  const deleteQuestion = useDeleteQuestion();
   return (
     <PopupButton
       title="delete question"
@@ -26,9 +29,7 @@ const DeleteQuestion = ({ question }: { question: SurveyQuestionModel }) => {
       DialogRender={({ props, handleClose }) => {
         return (
           <Dialog {...props}>
-            <DialogTitle>
-              Delete " {question.question} " confirmation
-            </DialogTitle>
+            <DialogTitle>Delete " {question.title} " confirmation</DialogTitle>
             <DialogContent>
               <DialogContentText>
                 Delete question will cuse loss it for eveer and its realted data
@@ -39,13 +40,15 @@ const DeleteQuestion = ({ question }: { question: SurveyQuestionModel }) => {
               <Button onClick={handleClose} variant="contained" color={"error"}>
                 Cancel
               </Button>
-              <Button
-                onClick={handleClose}
+              <LoadingButton
+                onClick={() => {
+                  deleteQuestion.mutate(question.id);
+                }}
                 variant="outlined"
                 color={"success"}
               >
                 Confirm
-              </Button>
+              </LoadingButton>
             </DialogActions>
           </Dialog>
         );

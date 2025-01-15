@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { request } from "../baseRequest";
+import { AxiosResponse } from "axios";
+import { MealType } from "../../tables-def/meal-types";
 
 const useGetTypes = () => {
-  const getTypes = () => {
+  const getTypes = (): Promise<AxiosResponse<MealType[]>> => {
     return request({
       url: "/admin/types",
     });

@@ -1,14 +1,9 @@
 import {
   Box,
   Divider,
-  FormControlLabel,
-  ListItem,
-  ListItemButton,
-  ListItemText,
   Skeleton,
   Stack,
   styled,
-  Switch,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -18,130 +13,57 @@ import Screen from "../../components/Screen";
 import useGetGetDarkValue from "../../utils/useGetGetDarkValue";
 import LineChart from "../../components/charts/LineChart";
 import MainCard from "../../components/MainCard";
-import { WorkoutLog } from "../../tables-def/workout-logs";
 import SectionTitle from "../../components/SectionTitle";
-import { useEffect, useState } from "react";
-import {
-  FitnessSubscription,
-  getProgressHistoryChartData,
-  userProfile,
-} from "../../tables-def/user-profile";
 import JustInViewRender from "../../components/JustInViewRender";
 import { useSearchParams } from "react-router-dom";
 import WorkoutManagement from "../../components/WorkoutManagement/WorkoutManagement";
-import { workouts } from "../../tables-def/workout";
-import { useGetUserProfile, useGetUserWeightRecords } from "../../api/users";
-import {
-  areEqual,
-  FixedSizeList as List,
-  ListChildComponentProps,
-} from "react-window";
+import { useGetUserInformations, useGetUsersWorkout } from "../../api/users";
+import LoadingDataError from "../../components/LoadingDataError";
+import ActivateController from "./ActivateController";
+import Loadable from "../../components/Loadable";
+import { lazy } from "react";
+import MealSelection from "./MealSelection";
+import SurveyAnswer from "./SurveyAnswer";
 
-const InformationTypography = styled(Typography)(() => ({
-  fontSize: "calc(18px + 0.02vw)",
+const FitnessSubscriptionList = Loadable(
+  lazy(() => import("./FitnessSubscription"))
+);
+const WorkoutLogs = Loadable(lazy(() => import("./WorkoutLogs")));
+const MealSubscription = Loadable(lazy(() => import("./MealSubscription")));
+
+const BasicInfoTypography = styled(Typography)(() => ({
+  fontSize: "calc(16px + 0.15vw)",
+  fontWeight: "500",
+  textTransform: "capitalize",
 }));
-
-const RenderRow = ({ workout }: { workout: WorkoutLog }) => {
-  const { type, workout_name, date } = workout;
-  const action = type === "join" ? "joined" : "completed";
-  const { getVlaue } = useGetGetDarkValue();
-
-  return (
-    <ListItem component="div" disablePadding>
-      <ListItemButton>
-        <ListItemText
-          sx={{
-            fontWeight: "400",
-            "& .MuiTypography-root": {
-              fontSize: "18px !important",
-            },
-            color: (theme) =>
-              getVlaue(theme.palette.grey[400], theme.palette.grey[700]),
-            "& .workout": {
-              fontWeight: "600",
-              color: "text.primary",
-            },
-            "& .date": {
-              fontWeight: "500",
-              color: getVlaue("primary.dark", "primary.light"),
-            },
-          }}
-        >
-          Player <span className="action">{action}</span> the{" "}
-          <span className="workout">"{workout_name}"</span> workout on{" "}
-          <span className="date">{date}</span>
-        </ListItemText>
-      </ListItemButton>
-    </ListItem>
-  );
-};
-
-const Subscription: React.FC<
-  ListChildComponentProps<FitnessSubscription[]>
-> = ({ index, style, data }) => {
-  const subscription = data[index];
-
-  return (
-    <div
-      style={{
-        ...style,
-        width: "300px",
-      }}
-      key={index}
-    >
-      <MainCard border={false}>
-        <SectionTitle>Subscription Plan</SectionTitle>
-        <Stack gap="10px">
-          <InformationTypography>
-            Subscriped at : {subscription.start_date}
-          </InformationTypography>
-          <InformationTypography>
-            Experid On : {subscription.end_date}
-          </InformationTypography>
-          <InformationTypography>
-            the player should be renew after {subscription.days_left} days
-          </InformationTypography>
-        </Stack>
-      </MainCard>
-    </div>
-  );
-};
 
 const UserProfile = () => {
   const { getVlaue } = useGetGetDarkValue();
-  const theme = useTheme();
-  const [profile] = useState(userProfile);
-  const [, setActiveDay] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
-  const user = useGetUserProfile();
-  // const [chartdata, setChartdata] = useState<{
-  //   catgeories: string[];
-  //   series: number[];
-  // } | null>(null);
+  const user = useGetUserInformations();
 
-  // const chartData = useGetUserWeightRecords();
-  // const { catgeories, series } = getProgressHistoryChartData({
-  //   weightProgress: profile.progress_history,
-  // });
-
-  // const barData = getProgressHistoryChartData({
-  //   weightProgress: profile.progress_history,
-  // });
-
-  const package_id = searchParams.get("package_id");
+  const theme = useTheme();
   const day = searchParams.get("day");
 
-  useEffect(() => {
-    setActiveDay(day);
-  }, [day, package_id]);
+  const getUserWorkouts = useGetUsersWorkout(day!);
 
-  // useEffect(() => {
-  //   if (chartData.isSuccess) {
-  //     console.log(chartData.data.data);
-  //   }
-  // }, [chartData]);
+  const userProfileData = user[0].data?.data;
 
-  const userProfileData = user?.data?.data;
+  const withRecords = user[5].data?.data || [];
+
+  const chartData = withRecords.map((record) => ({
+    x: record.date,
+    y: record.weight,
+  }));
+
+  console.log(chartData);
+
+  const series = [
+    {
+      name: "Weight",
+      data: chartData,
+    },
+  ];
 
   return (
     <Screen title="jawad taki aldeen">
@@ -185,26 +107,26 @@ const UserProfile = () => {
                 justifyContent={"space-between"}
                 alignItems={{ xs: "center", sm: "flex-start" }}
               >
-                <Box>
-                  {user.isLoading ? (
+                <Stack gap={2}>
+                  {user[0].isLoading ? (
                     <Skeleton width={150} variant="text" />
                   ) : (
-                    <Typography
-                      variant="h2"
+                    <BasicInfoTypography
                       sx={{
                         textAlign: { xs: "center", sm: "start" },
                         width: "100%",
+                        fontSize: "calc(20px + 1vw)",
+                        fontWeight: "700",
                       }}
                     >
                       {userProfileData?.name}
-                    </Typography>
+                    </BasicInfoTypography>
                   )}
 
-                  {user.isLoading ? (
+                  {user[0].isLoading ? (
                     <Skeleton width={250} variant="text" />
                   ) : (
-                    <Typography
-                      variant="subtitle1"
+                    <BasicInfoTypography
                       sx={{
                         textAlign: { xs: "center", sm: "start" },
                         width: "100%",
@@ -217,14 +139,13 @@ const UserProfile = () => {
                       }}
                     >
                       {userProfileData?.email}
-                    </Typography>
+                    </BasicInfoTypography>
                   )}
 
-                  {user.isLoading ? (
+                  {user[0].isLoading ? (
                     <Skeleton width={250} variant="text" />
                   ) : (
-                    <Typography
-                      variant="subtitle1"
+                    <BasicInfoTypography
                       sx={{
                         textAlign: { xs: "center", sm: "start" },
                         width: "100%",
@@ -237,134 +158,170 @@ const UserProfile = () => {
                       }}
                     >
                       {userProfileData?.phone}
-                    </Typography>
+                    </BasicInfoTypography>
                   )}
-                </Box>
+                  {user[0].isLoading ? (
+                    <>
+                      <Skeleton width={250} variant="text" />
+                      <Skeleton width={240} variant="text" />
+                      <Skeleton width={230} variant="text" />
+                      <Skeleton width={220} variant="text" />
+                      <Skeleton width={200} variant="text" />
+                    </>
+                  ) : (
+                    <Stack gap={2}>
+                      <BasicInfoTypography>
+                        Height :{" "}
+                        {userProfileData?.height || "Profile setup required"}
+                      </BasicInfoTypography>
+                      <BasicInfoTypography>
+                        Age : {userProfileData?.age || "Profile setup required"}
+                      </BasicInfoTypography>
+                      <BasicInfoTypography>
+                        Gender :{" "}
+                        {userProfileData?.gender || "Profile setup required"}
+                      </BasicInfoTypography>
+                      <BasicInfoTypography>
+                        training location :{" "}
+                        {userProfileData?.training_location ||
+                          "Profile setup required"}
+                      </BasicInfoTypography>
+                      <BasicInfoTypography>
+                        Sport :{" "}
+                        {userProfileData?.sport?.title ||
+                          "Profile setup required"}
+                      </BasicInfoTypography>
+
+                      <BasicInfoTypography>
+                        Goal :{" "}
+                        {userProfileData?.goal || "Profile setup required"}
+                      </BasicInfoTypography>
+                      <BasicInfoTypography>
+                        dietary preferences :{" "}
+                        {userProfileData?.dietary_preferences ||
+                          "Profile setup required"}
+                      </BasicInfoTypography>
+                      <BasicInfoTypography>
+                        sport duration :{" "}
+                        {userProfileData?.sport_duration ||
+                          "Profile setup required"}
+                      </BasicInfoTypography>
+                    </Stack>
+                  )}
+                </Stack>
                 <Box>
-                  <FormControlLabel
-                    label="Activate"
-                    control={<Switch size="medium" />}
+                  <ActivateController
+                    isLoading={user[0].isLoading}
+                    isActive={user[0]?.data?.data.is_blocked || false}
                   />
                 </Box>
               </Stack>
             </Grid>
-            <Grid size={12}>
-              <Divider />
-            </Grid>
-            <Grid size={12}>
-              {user.isLoading ? (
-                <MainCard border={false}>
-                  <Skeleton width={150} variant="text" />
-                  <Skeleton width={140} variant="text" />
-                  <Skeleton width={130} variant="text" />
-                  <Skeleton width={120} variant="text" />
-                </MainCard>
-              ) : (
-                <>
-                  <List
-                    itemCount={
-                      userProfileData?.fitness_subscriptions?.length || 0
-                    }
-                    itemSize={310}
-                    height={380}
-                    width={1000}
-                    itemData={userProfileData?.fitness_subscriptions}
-                    layout="horizontal"
-                    style={{
-                      width: "100%",
-                    }}
-                  >
-                    {Subscription}
-                  </List>
-                </>
-              )}
-            </Grid>
-            <Grid size={12}>
-              <Divider />
-            </Grid>
           </Grid>
         </Grid>
+      </Grid>
+      <Grid size={12}>
+        <Divider sx={{ my: 2 }} />
+      </Grid>
+      <Grid size={12}>
+        {user[4].isLoading ? (
+          <MainCard border={false}>
+            <Skeleton width={150} variant="text" />
+            <Skeleton width={140} variant="text" />
+            <Skeleton width={130} variant="text" />
+            <Skeleton width={120} variant="text" />
+          </MainCard>
+        ) : (
+          <FitnessSubscriptionList data={user[4].data?.data || []} />
+        )}
+      </Grid>
+      <Grid size={12}>
+        <Divider sx={{ my: 2 }} />
+      </Grid>
+      <Grid size={12}>
+        {user[3].isLoading ? (
+          <MainCard border={false}>
+            <Skeleton width={150} variant="text" />
+            <Skeleton width={140} variant="text" />
+            <Skeleton width={130} variant="text" />
+            <Skeleton width={120} variant="text" />
+          </MainCard>
+        ) : (
+          <MealSubscription mealsSubscription={user[3].data?.data || []} />
+        )}
+      </Grid>
+
+      <Grid size={12}>
+        <Divider sx={{ my: 2 }} />
+      </Grid>
+      <Grid size={12}>
+        {user[2].isLoading ? (
+          <MainCard border={false}>
+            <Skeleton width={150} variant="text" />
+            <Skeleton width={140} variant="text" />
+            <Skeleton width={130} variant="text" />
+            <Skeleton width={120} variant="text" />
+          </MainCard>
+        ) : (
+          <MealSelection mealSelection={user[2].data?.data || []} />
+        )}
+      </Grid>
+      <Grid size={12}>
+        <Divider sx={{ my: 2 }} />
+      </Grid>
+      <Grid size={12}>
+        {user[1].isLoading ? (
+          <MainCard border={false}>
+            <Skeleton width={150} variant="text" />
+            <Skeleton width={140} variant="text" />
+            <Skeleton width={130} variant="text" />
+            <Skeleton width={120} variant="text" />
+          </MainCard>
+        ) : (
+          <SurveyAnswer surveyAnswers={user[1].data?.data || []} />
+        )}
+      </Grid>
+      <Grid size={12}>
+        <Divider sx={{ my: 2 }} />
       </Grid>
       <Grid container spacing={gridSpacing}>
         <Grid size={12}>
           <SectionTitle>Progress History</SectionTitle>
-          {/* <Grid container spacing={gridSpacing}>
-            <Grid size={{ xs: 12, md: 6 }}>
+          <Grid container spacing={gridSpacing}>
+            <Grid size={12}>
               <MainCard border={false} sx={{ p: 1 }}>
                 <Typography variant="h4">Weigh Progress</Typography>
                 <JustInViewRender>
                   <LineChart
-                    series={[
-                      {
-                        name: "Weight",
-                        data: series,
-                      },
-                    ]}
-                    options={{
-                      colors: [
-                        getVlaue(
-                          theme.palette.grey[500],
-                          theme.palette.primary.main
-                        ),
-                      ],
-                      tooltip: {
-                        theme: theme.palette.mode,
-                      },
-                      grid: {
-                        borderColor: theme.palette.divider,
-                      },
-                      yaxis: {
-                        labels: {
-                          style: {
-                            colors: [theme.palette.primary.main],
-                          },
-                        },
-                      },
-                      xaxis: {
-                        categories: catgeories,
-                        labels: {
-                          style: {
-                            colors: [
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                            ],
-                          },
-                        },
-                      },
-                    }}
-                  />
-                </JustInViewRender>
-              </MainCard>
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <MainCard border={false} sx={{ p: 1 }}>
-                <Typography variant="h4">Weigh Progress</Typography>
-                <JustInViewRender>
-                  <LineChart
-                    type="bar"
-                    series={[
-                      {
-                        name: "Weight",
-                        data: barData.series,
-                      },
-                    ]}
+                    type="line"
+                    series={series}
                     options={{
                       colors: [theme.palette.secondary.light],
+                      chart: {
+                        type: "line",
+                        zoom: {
+                          enabled: false,
+                        },
+                      },
                       tooltip: {
                         theme: theme.palette.mode,
                       },
                       grid: {
                         borderColor: theme.palette.divider,
+                      },
+                      xaxis: {
+                        type: "category",
+                        labels: {
+                          style: {
+                            colors: Array.from(
+                              { length: withRecords.length },
+                              () => theme.palette.text.primary
+                            ),
+                          },
+                        },
+                        title: {
+                          text: "Date",
+                        },
                       },
                       yaxis: {
                         labels: {
@@ -372,67 +329,53 @@ const UserProfile = () => {
                             colors: [theme.palette.primary.main],
                           },
                         },
-                      },
-                      xaxis: {
-                        categories: barData.catgeories,
-                        labels: {
-                          style: {
-                            colors: [
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                              theme.palette.text.primary,
-                            ],
-                          },
+                        title: {
+                          text: "Weight (kg)",
                         },
                       },
+                      stroke: {
+                        curve: "smooth",
+                      },
+                      title: {
+                        text: "Weight Record Over Time",
+                        align: "center",
+                      },
                     }}
+                    height={400}
                   />
                 </JustInViewRender>
               </MainCard>
             </Grid>
-          </Grid> */}
+          </Grid>
         </Grid>
-        {/* <Grid size={12}>
-          <SectionTitle>Workout Logs</SectionTitle>
-          <MainCard
-            sx={{
-              width: "100%",
-              height: "400px",
-              overflow: "auto",
-              bgcolor: "background.paper",
+        <Grid size={12}>
+          <WorkoutLogs />
+        </Grid>
+      </Grid>
+
+      <Box sx={{ my: 2 }}>
+        {getUserWorkouts.isLoading && (
+          <Skeleton width={"100%"} height={"400px"} />
+        )}
+        {getUserWorkouts.isError ? (
+          <LoadingDataError refetch={getUserWorkouts.refetch} />
+        ) : getUserWorkouts.isLoading ? (
+          <Typography sx={{ textAlign: "center" }}>Loading...</Typography>
+        ) : (
+          <WorkoutManagement
+            type={"personalized"}
+            user={{
+              id: userProfileData?.id!,
+              name: userProfileData?.name!,
             }}
-          >
-            {profile.workout_logs.slice(0, 20).map((workout, i) => (
-              <RenderRow key={i} workout={workout} />
-            ))}
-          </MainCard>
-        </Grid> */}
-      </Grid>
-      <Grid sx={{ mt: 2 }} container spacing={gridSpacing}>
-        <WorkoutManagement
-          type={"personalized"}
-          user={{
-            id: userProfile.id,
-            name: userProfile.name,
-          }}
-          targetPackage={{
-            id: 5,
-            name: "package of user",
-          }}
-          data={{
-            Saturday: [workouts[0]],
-          }}
-        />
-      </Grid>
+            targetPackage={{
+              id: 5,
+              name: "package of user",
+            }}
+            data={getUserWorkouts.data?.data || {}}
+          />
+        )}
+      </Box>
     </Screen>
   );
 };

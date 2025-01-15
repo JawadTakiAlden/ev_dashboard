@@ -1,12 +1,33 @@
 import { Box, Divider, Typography } from "@mui/material";
-import React from "react";
-import WorkoutForm from "../components/WorkoutForm";
+import React, { useEffect } from "react";
+import WorkoutForm, {
+  ExerciseSelected,
+  useCreateWorkout,
+} from "../components/WorkoutForm";
 import DeleteTypography from "../../../components/DeleteTypography";
 import DoupleClickToConfirm from "../../../components/DoupleClickToConfirm";
 import Grid from "@mui/material/Grid2";
 import { gridSpacing } from "../../../config";
+import { useDeleteWorkout, useUpdateWorkout } from "../../../api/workout";
+import { WorkoutDetail } from "../../../tables-def/workout";
 
-const SettingsPannel = () => {
+const SettingsPannel = ({ workout }: { workout: WorkoutDetail }) => {
+  const deleteWorkout = useDeleteWorkout();
+  const { setExer } = useCreateWorkout();
+  const updateWorkout = useUpdateWorkout();
+  useEffect(() => {
+    const exercisesSelected = workout.exercises.map((exer) => {
+      return {
+        exercise_id: exer.id,
+        exerciseType: "sets",
+        name: exer.name,
+        reps: exer.WorkoutExercise.reps,
+        sets: exer.WorkoutExercise.sets,
+        duration: exer.duration,
+      };
+    });
+    setExer(exercisesSelected as ExerciseSelected[]);
+  }, []);
   return (
     <Box>
       <Grid container spacing={gridSpacing}>
@@ -14,17 +35,19 @@ const SettingsPannel = () => {
           <WorkoutForm
             task="update"
             initialValues={{
-              title: "update from",
-              description: "this form for update workout",
-              difficulty_level: "its so easy to update the workout",
-              duration: 30,
-              type: "group",
-              user: null,
-              coach: null,
-              exercises: [1, 4, 7],
+              title: workout.title,
+              description: workout.description,
+              difficulty_level: workout.difficulty_level,
+              duration: workout.duration,
+              type: workout.type,
+              calories_burned: 0,
+              image: workout.image,
+              package_id: workout.package_id,
+              user_id: workout.user_id,
+              exercises: [],
             }}
             onSubmit={(values) => {
-              console.log(values);
+              updateWorkout.mutate(values);
             }}
           />
         </Grid>
@@ -45,7 +68,7 @@ const SettingsPannel = () => {
             <DoupleClickToConfirm
               color="error"
               onClick={() => {
-                console.log("douple clicked");
+                deleteWorkout.mutate();
               }}
             >
               Delete

@@ -11,8 +11,10 @@ import {
 } from "@mui/material";
 import { Link as BaseLink } from "react-router-dom";
 import { WorkoutModel } from "../../../tables-def/workout";
+import { useAuthContext } from "../../../providers/AuthProvider";
 
 const WorkoutCard = ({ workout }: { workout: WorkoutModel }) => {
+  const { base } = useAuthContext();
   return (
     <MainCard
       border={false}
@@ -88,7 +90,7 @@ const WorkoutCard = ({ workout }: { workout: WorkoutModel }) => {
           component={BaseLink}
           color="primary"
           variant="button"
-          to={`/dashboard/workout/${workout.id}`}
+          to={`/${base}/dashboard/workout/${workout.id}`}
         >
           more
         </Link>

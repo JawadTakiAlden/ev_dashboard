@@ -3,5 +3,5 @@ export const homepageMap: {
 } = {
   admin: "/admin/dashboard/home",
   coach: "/coach/dashboard/home",
-  kitchen: "/kitchen/dashboard/orders",
+  kitchen_staff: "/kitchen_staff/dashboard/orders",
 };

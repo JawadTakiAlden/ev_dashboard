@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { QueryResponse, request, ServerResponse } from "../baseRequest";
+import { request, ServerResponse } from "../baseRequest";
 import { MealIngreadiant } from "../../tables-def/meal-ingrediant";
 import { AxiosResponse } from "axios";
 import { toast } from "react-toastify";
@@ -24,6 +24,9 @@ export const useCreateIngredient = () => {
     return request({
       url: "/admin/ingredients",
       method: "post",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
       data,
     });
   };
@@ -73,6 +76,9 @@ export const useUpdateIngredient = () => {
     return request({
       url: `/admin/ingredients/${id}`,
       method: "put",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
       data,
     });
   };

@@ -14,6 +14,12 @@ import { CgExtensionAdd } from "react-icons/cg";
 import { PiFlagBannerFold } from "react-icons/pi";
 import { CiChat2 } from "react-icons/ci";
 import { FaFirstOrder } from "react-icons/fa";
+import { FcPrivacy } from "react-icons/fc";
+import { FcFaq } from "react-icons/fc";
+import { RiCalendarScheduleFill } from "react-icons/ri";
+import { FcRules } from "react-icons/fc";
+
+import { FcSportsMode } from "react-icons/fc";
 
 export const adminMenuItems: MenuItemObject[] = [
   {
@@ -101,10 +107,24 @@ export const adminMenuItems: MenuItemObject[] = [
       },
       {
         id: "all-meal-types",
-        title: "Types & Ingrediant",
+        title: "Meal Types",
         type: "item",
         icon: <CgExtensionAdd size={30} />,
         path: "/admin/dashboard/meal-types",
+      },
+      {
+        id: "all-meal-ingredients",
+        title: "Meal Ingrediant",
+        type: "item",
+        icon: <CgExtensionAdd size={30} />,
+        path: "/admin/dashboard/meal-ingredients",
+      },
+      {
+        id: "all-delvery-times",
+        title: "Delivery Times",
+        type: "item",
+        icon: <RiCalendarScheduleFill size={30} />,
+        path: "/admin/dashboard/delivery-times",
       },
       {
         id: "week-management",
@@ -155,13 +175,13 @@ export const adminMenuItems: MenuItemObject[] = [
         title: "Workouts",
         type: "coollabse",
         children: [
-          {
-            id: "all-workout",
-            title: "All",
-            type: "item",
-            path: "/admin/dashboard/workout",
-            icon: <CgGym size={30} />,
-          },
+          // {
+          //   id: "all-workout",
+          //   title: "All",
+          //   type: "item",
+          //   path: "/admin/dashboard/workout",
+          //   icon: <CgGym size={30} />,
+          // },
           {
             id: "create-workout",
             title: "Create workout",
@@ -223,6 +243,46 @@ export const adminMenuItems: MenuItemObject[] = [
   //     },
   //   ],
   // },
+  {
+    title: "Public",
+    type: "group",
+    children: [
+      {
+        id: "privacy-ploicy",
+        path: "/admin/dashboard/privacy",
+        title: "Privacy Policy",
+        type: "item",
+        icon: <FcPrivacy size={30} />,
+        external: false,
+      },
+      {
+        id: "terms",
+        path: "/admin/dashboard/terms-and-conditions",
+        title: "Terms & Condtions",
+        type: "item",
+        icon: <FcRules size={30} />,
+        external: false,
+      },
+      {
+        id: "faq",
+        path: "/admin/dashboard/faqs",
+        title: "FAQ",
+        type: "item",
+        icon: <FcFaq size={30} />,
+        external: false,
+      },
+
+      {
+        id: "sport",
+        path: "/admin/dashboard/sports",
+        title: "Sports",
+        type: "item",
+        icon: <FcSportsMode size={30} />,
+
+        external: false,
+      },
+    ],
+  },
 ];
 
 export const coacheMenuItems: MenuItemObject[] = [
@@ -277,7 +337,7 @@ export const kitchenItems: MenuItemObject[] = [
     children: [
       {
         id: "kitchen-order",
-        path: "/kitchen/dashboard/orders",
+        path: "/kitchen_staff/dashboard/orders",
         title: "Orders",
         type: "item",
         icon: <FaFirstOrder size={30} />,
@@ -285,11 +345,18 @@ export const kitchenItems: MenuItemObject[] = [
       },
       {
         id: "create-meal",
-        path: "/kitchen/dashboard/create-meal",
+        path: "/kitchen_staff/dashboard/meals",
         title: "Create Meal",
         type: "item",
         icon: <IoCreateOutline size={30} />,
         external: false,
+      },
+      {
+        id: "all-meal-types",
+        title: "Types & Ingrediant",
+        type: "item",
+        icon: <CgExtensionAdd size={30} />,
+        path: "/kitchen_staff/dashboard/meal-types",
       },
     ],
   },

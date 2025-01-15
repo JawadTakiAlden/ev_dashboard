@@ -1,12 +1,16 @@
 import React, { useMemo } from "react";
 import {
-  Button,
   FormControl,
   InputLabel,
   OutlinedInput,
   FormHelperText,
   Box,
   Typography,
+  Stack,
+  Autocomplete,
+  Chip,
+  TextField,
+  IconButton,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { gridSpacing } from "../../../config";
@@ -15,6 +19,7 @@ import FileImagePicker from "../../../components/FileImagePicker";
 import ReactPlayer from "react-player";
 import { FormLoadingButtonProps } from "../../../tables-def/loadingButtonProps";
 import { LoadingButton } from "@mui/lab";
+import { MdDeleteSweep } from "react-icons/md";
 
 interface ExerciseFormProps {
   task: "create" | "update";
@@ -24,10 +29,11 @@ interface ExerciseFormProps {
 interface ExerciseFormValues {
   name: string;
   description: string;
-  duration: number;
-  image: null | string | File;
+  // duration: number;
+  images: string[] | File[];
   target_muscles_image: null | string | File;
   video: null | string | File;
+  notes: string[];
 }
 
 const ExerciseForm = ({
@@ -52,26 +58,59 @@ const ExerciseForm = ({
 
   const exerciseImg = useMemo(() => {
     return (
-      values.image && (
-        <img
-          src={
-            typeof values.image === "string"
-              ? values.image
-              : URL.createObjectURL(values.image as unknown as MediaSource)
-          }
-          alt="exercise "
-          style={{
-            width: "150px",
-            height: "100%",
-            borderRadius: "6px",
-            maxHeight: "150px",
-            objectFit: "contain",
-            maxWidth: "100%",
-          }}
-        />
+      values.images?.length > 0 && (
+        <Stack flexDirection={"row"} gap={0.5} alignItems={"center"}>
+          {values.images?.map((image, i) => {
+            return (
+              <Box sx={{ position: "relative" }}>
+                <img
+                  key={i}
+                  src={
+                    typeof image === "string"
+                      ? image
+                      : URL.createObjectURL(image as unknown as MediaSource)
+                  }
+                  alt="exercise "
+                  style={{
+                    width: "150px",
+                    height: "100%",
+                    borderRadius: "6px",
+                    maxHeight: "150px",
+                    objectFit: "contain",
+                    maxWidth: "100%",
+                  }}
+                />
+                <Box
+                  sx={{
+                    py: 0.5,
+                    px: 0.5,
+                    borderRadius: "4px",
+                    backgroundColor: "background.paper",
+                  }}
+                >
+                  <IconButton
+                    onClick={() => {
+                      const filterImages = values.images.filter(
+                        (img, imageIndex) => {
+                          return i !== imageIndex;
+                        }
+                      );
+
+                      setFieldValue("images", filterImages);
+                    }}
+                    color="error"
+                    size="small"
+                  >
+                    <MdDeleteSweep />
+                  </IconButton>
+                </Box>
+              </Box>
+            );
+          })}
+        </Stack>
       )
     );
-  }, [values.image]);
+  }, [values.images.length]);
 
   const targetImage = useMemo(() => {
     return (
@@ -134,7 +173,7 @@ const ExerciseForm = ({
             )}
           </FormControl>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
+        {/* <Grid size={{ xs: 12, sm: 6 }}>
           <FormControl
             fullWidth
             error={Boolean(touched.duration && errors.duration)}
@@ -153,6 +192,39 @@ const ExerciseForm = ({
               <FormHelperText>{errors.duration}</FormHelperText>
             )}
           </FormControl>
+        </Grid> */}
+
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <Autocomplete
+            multiple
+            options={[]}
+            defaultValue={values.notes}
+            onChange={(e, newVlaue) => {
+              setFieldValue("notes", newVlaue);
+            }}
+            freeSolo
+            renderTags={(value: readonly string[], getTagProps) => {
+              return value?.map((option: string, index: number) => {
+                const { key, ...tagProps } = getTagProps({ index });
+                return (
+                  <Chip
+                    variant="outlined"
+                    label={option}
+                    key={key}
+                    {...tagProps}
+                  />
+                );
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                label="notes"
+                placeholder="write a note and click enter"
+              />
+            )}
+          />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <FormControl
@@ -175,18 +247,21 @@ const ExerciseForm = ({
             )}
           </FormControl>
         </Grid>
-        <Grid size={{ xs: 12, md: 6 }} />
+        <Grid size={12}></Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <Grid container spacing={1}>
+            <Grid size={12}>{values.images && exerciseImg}</Grid>
             <Grid size={"grow"} sx={{ transition: "width 0.3s" }}>
               <FileImagePicker
                 title="Exercise Image"
                 onSelectImage={(files) => {
-                  setFieldValue("image", files?.[0]);
+                  if (files !== null && files?.length > 0) {
+                    setFieldValue("images", [...values.images, files[0]]);
+                  }
                 }}
-                name="image"
+                name="images"
                 accept="image/png,image/jpg,image/jpeg"
-                id="image"
+                id="images"
                 onBlur={handleBlur}
                 renderContent={() => {
                   return (
@@ -199,10 +274,9 @@ const ExerciseForm = ({
                 }}
               />
             </Grid>
-            <Grid size={"auto"}>{values.image && exerciseImg}</Grid>
           </Grid>
-          {touched.image && errors.image && (
-            <FormHelperText error>{errors.image}</FormHelperText>
+          {touched.images && errors.images && (
+            <FormHelperText error>{errors.images}</FormHelperText>
           )}
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
@@ -211,7 +285,9 @@ const ExerciseForm = ({
               <FileImagePicker
                 title="Target Muscles Image"
                 onSelectImage={(files) => {
-                  setFieldValue("target_muscles_image", files?.[0]);
+                  if (files !== null) {
+                    setFieldValue("target_muscles_image", files[0]);
+                  }
                 }}
                 accept="image/png,image/jpg,image/jpeg"
                 name="target_muscles_image"

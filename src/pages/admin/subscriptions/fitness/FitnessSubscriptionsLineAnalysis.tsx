@@ -1,24 +1,17 @@
+import { useGetRenwalStats } from "../../../../api/admin/stats";
 import RenewalAndCancelationLineChartAnalysis from "../components/RenewalAndCancelationLineChartAnalysis";
+import LoadingDataError from "../../../../components/LoadingDataError";
 
 const FitnessSubscriptionsLineAnalysis = () => {
+  const fitnessStats = useGetRenwalStats();
+  if (fitnessStats.isError) {
+    return <LoadingDataError refetch={fitnessStats.refetch} />;
+  }
   return (
     <RenewalAndCancelationLineChartAnalysis
-      categories={[
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ]}
-      renewalData={[20, 20, 30, 50, 90]}
-      cacelationData={[25, 15, 11, 90, 85]}
+      categories={fitnessStats?.data?.data?.xaxis || []}
+      isLoading={fitnessStats.isLoading}
+      renewalData={fitnessStats?.data?.data?.renewal_data || []}
     />
   );
 };

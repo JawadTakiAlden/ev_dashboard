@@ -6,7 +6,6 @@ import AllUsers from "../pages/admin/users";
 import UserProfile from "../pages/profile";
 import FitnessSubscriptions from "../pages/admin/subscriptions/fitness";
 import FoodSubscriptions from "../pages/admin/subscriptions/food";
-import Workout from "../pages/Workout";
 import CreateWorkout from "../pages/Workout/createWorkout/createWorkout";
 import Exercise from "../pages/Exercise";
 import CreateExcercise from "../pages/Exercise/createExcercise/createExcercise";
@@ -28,6 +27,13 @@ import Banners from "../pages/banner";
 import Packages from "../pages/packages";
 import PackageDetail from "../pages/packages/PackageDetail";
 import GroupWorkoutManagement from "../pages/groupWorkoutManagem/GroupWorkoutManagement";
+import Privacy from "../pages/admin/privacy";
+import FAQs from "../pages/admin/FAQ";
+import Sports from "../pages/admin/sports";
+import DeliveryTime from "../pages/delivery-times/DeliveryTime";
+import CreateUser from "../pages/admin/users/CreateUser";
+import TermsAndConditions from "../pages/admin/termsAndCOndtions/TermsAndConditions";
+import MealIngrediant from "../pages/MealTypes/MealIngrediant";
 
 export const adminRoutes: RouteObject = {
   path: "",
@@ -40,6 +46,26 @@ export const adminRoutes: RouteObject = {
         {
           path: "dashboard",
           children: [
+            {
+              path: "privacy",
+              element: <Privacy />,
+            },
+            {
+              path: "terms-and-conditions",
+              element: <TermsAndConditions />,
+            },
+            {
+              path: "faqs",
+              element: <FAQs />,
+            },
+            {
+              path: "sports",
+              element: <Sports />,
+            },
+            {
+              path: "delivery-times",
+              element: <DeliveryTime />,
+            },
             {
               path: "home",
 
@@ -56,6 +82,10 @@ export const adminRoutes: RouteObject = {
                 {
                   path: ":userId",
                   element: <UserProfile />,
+                },
+                {
+                  path: "create",
+                  element: <CreateUser />,
                 },
               ],
             },
@@ -75,10 +105,6 @@ export const adminRoutes: RouteObject = {
             {
               path: "workout",
               children: [
-                {
-                  path: "",
-                  element: <Workout />,
-                },
                 {
                   path: "group-workout",
                   element: <GroupWorkoutManagement />,
@@ -157,6 +183,19 @@ export const adminRoutes: RouteObject = {
                   element: <MealDetail />,
                 },
               ],
+            },
+            {
+              path : "meal-ingredients",
+              children : [
+                {
+                  path : "",
+                  element : <MealIngrediant />
+                },
+                // {
+                //   path : "create",
+                //   element : <CreateMealIngredient />
+                // }
+              ]
             },
             {
               path: "meal-plans",

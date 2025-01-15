@@ -33,6 +33,14 @@ const Sidebar = ({ items = [] }: { items?: MenuItemObject[] }) => {
           variant="permanent"
           open={open}
           onClose={handelClose}
+          PaperProps={{
+            sx: {
+              "&::-webkit-scrollbar": {
+                width: "0px", // Width of the scrollbar
+                height: "10px", // Height of the scrollbar for horizontal scrolling
+              },
+            },
+          }}
         >
           <SidebarHeader />
           <Box

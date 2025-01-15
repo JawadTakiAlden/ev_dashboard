@@ -4,9 +4,10 @@ import { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { useAuthContext } from "../../providers/AuthProvider";
 import { useNavigate, useParams } from "react-router";
+import { Package } from "../../tables-def/packages";
 
 export const useGetPackages = () => {
-  const getPackages = () => {
+  const getPackages = (): Promise<AxiosResponse<Package[]>> => {
     return request({
       url: "/admin/packages",
     });
@@ -15,6 +16,25 @@ export const useGetPackages = () => {
   const query = useQuery({
     queryKey: ["get-packages"],
     queryFn: getPackages,
+  });
+
+  return query;
+};
+
+export const useGetWorkoutOfPackageAndDay = (
+  packageId: string | number | undefined,
+  day: string | undefined
+) => {
+  const getWorkoutOfPackageAndDay = () => {
+    return request({
+      url: `/coach/group-workout?package_id=${packageId}&day=${day}`,
+    });
+  };
+
+  const query = useQuery({
+    queryKey: [`get-workouts-of-${packageId}-${day}`],
+    queryFn: getWorkoutOfPackageAndDay,
+    enabled: !!packageId && !!day,
   });
 
   return query;
@@ -40,7 +60,7 @@ export const useCreatePackages = () => {
       queryClient.refetchQueries({
         queryKey: ["get-packages"],
       });
-      navigate(`/${base}/dashboard/packages/${res.data.id}`);
+      navigate(`/${base}/dashboard/packages/${res.data.package.id}`);
     },
     onError: (err: AxiosError) => {
       console.log(err);
@@ -182,6 +202,33 @@ export const useUpdatePrice = () => {
   const mutation = useMutation({
     mutationKey: ["update-package"],
     mutationFn: updatePrice,
+    onSuccess: (res: AxiosResponse<ServerResponse>) => {
+      toast(res.data.message);
+      queryClient.refetchQueries({
+        queryKey: [`show-package-${packageId}`],
+      });
+    },
+    onError: (err: AxiosError) => {
+      console.log(err);
+    },
+  });
+
+  return mutation;
+};
+
+export const useDeletePrice = () => {
+  const deletePrice = (id: number) => {
+    return request({
+      url: `/admin/pricing/${id}`,
+      method: "delete",
+    });
+  };
+
+  const { packageId } = useParams();
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationKey: ["delete-package"],
+    mutationFn: deletePrice,
     onSuccess: (res: AxiosResponse<ServerResponse>) => {
       toast(res.data.message);
       queryClient.refetchQueries({

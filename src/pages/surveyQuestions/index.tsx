@@ -1,5 +1,4 @@
-import React from "react";
-import Table from "../../components/Table";
+import React, { lazy } from "react";
 import {
   SurveyQuestionModel,
   surveyQuestions,
@@ -9,6 +8,9 @@ import { Box, Stack } from "@mui/material";
 import DeleteQuestion from "./questionsActions/deleteQuestion";
 import UpdateQuestion from "./questionsActions/updateQuestion";
 import CreateQuestion from "./createQuestion/createQuestion";
+import Loadable from "../../components/Loadable";
+
+const Table = Loadable(lazy(() => import("../../components/Table")));
 
 const SurveyQuestions = ({
   questions = surveyQuestions,

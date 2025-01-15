@@ -1,21 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Package, Pricing } from "../../tables-def/packages";
+import { Package } from "../../tables-def/packages";
 import MainCard from "../../components/MainCard";
 import UnderlineHeader from "../../components/UnderlineHeader";
-import { Box, Button, Stack, Typography } from "@mui/material";
 
 const MiniPackageCard = ({ packageRow }: { packageRow: Package }) => {
-  const [selectedPricing, setSelectedPricing] = useState<Pricing | null>(null);
-
-  useEffect(() => {
-    if (packageRow?.pricings?.length! > 0) {
-      setSelectedPricing(packageRow?.pricings![0]);
-    }
-  }, [packageRow?.pricings]);
   return (
     <MainCard border={false}>
       <UnderlineHeader>{packageRow.name}</UnderlineHeader>
-      <Stack sx={{ my: 1 }} flexDirection={"row"} gap={2} flexWrap={"wrap"}>
+      {/* <Stack sx={{ my: 1 }} flexDirection={"row"} gap={2} flexWrap={"wrap"}>
         {packageRow.pricings?.map((price) => (
           <Button
             onClick={() => setSelectedPricing(price)}
@@ -26,8 +17,8 @@ const MiniPackageCard = ({ packageRow }: { packageRow: Package }) => {
             {price.title}
           </Button>
         ))}
-      </Stack>
-      {selectedPricing !== null ? (
+      </Stack> */}
+      {/* {selectedPricing !== null ? (
         <Box>
           <Typography
             sx={{
@@ -51,7 +42,7 @@ const MiniPackageCard = ({ packageRow }: { packageRow: Package }) => {
         </Box>
       ) : (
         <Typography>no pricing unitl now here</Typography>
-      )}
+      )} */}
     </MainCard>
   );
 };

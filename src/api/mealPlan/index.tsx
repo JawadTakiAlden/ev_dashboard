@@ -95,3 +95,30 @@ export const useDeleteMealPlan = () => {
 
   return mutation;
 };
+
+export const useUpdateMealPlan = () => {
+  const { mealPlanId } = useParams();
+  const updateMealPlan = (data: any) => {
+    return request({
+      url: `/admin/meal-plans/${mealPlanId}`,
+      method: "put",
+      data,
+    });
+  };
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationKey: ["update-meal-plan"],
+    mutationFn: updateMealPlan,
+    onSuccess: (res: AxiosResponse) => {
+      toast(res.data.message);
+      queryClient.refetchQueries({
+        queryKey: [`show-meal-plan-${mealPlanId}`],
+      });
+    },
+    onError: (err: AxiosError) => {
+      console.log(err);
+    },
+  });
+
+  return mutation;
+};

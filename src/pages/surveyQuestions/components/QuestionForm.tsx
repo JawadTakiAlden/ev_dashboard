@@ -1,9 +1,16 @@
 import {
+  Autocomplete,
   Box,
+  Chip,
   FormControl,
+  FormControlLabel,
   FormHelperText,
+  FormLabel,
   InputLabel,
   OutlinedInput,
+  Radio,
+  RadioGroup,
+  TextField,
   Typography,
 } from "@mui/material";
 import { FormikConfig, useFormik } from "formik";
@@ -12,16 +19,22 @@ import FileImagePicker from "../../../components/FileImagePicker";
 import Grid from "@mui/material/Grid2";
 import { gridSpacing } from "../../../config";
 import { LoadingButton } from "@mui/lab";
+import { FormLoadingButtonProps } from "../../../tables-def/loadingButtonProps";
 
 interface QuestionFormValues {
-  question: string;
-  question_image: null | string | File;
+  title: string;
+  image: string | null | File;
+  type: "normal" | "choice";
+  choices?: string[];
 }
 
 const QuestionForm = ({
   task = "create",
+  loadingButtonProps,
   ...formikConfig
-}: FormikConfig<QuestionFormValues> & { task?: "create" | "update" }) => {
+}: FormikConfig<QuestionFormValues> & {
+  task?: "create" | "update";
+} & FormLoadingButtonProps) => {
   const {
     values,
     touched,
@@ -36,7 +49,7 @@ const QuestionForm = ({
 
   const memoziedQuestionImage = useMemo(() => {
     return (
-      values.question_image && (
+      values.image && (
         <Box
           sx={{
             width: "100%",
@@ -47,11 +60,9 @@ const QuestionForm = ({
           <img
             alt="new question"
             src={
-              typeof values.question_image === "string"
-                ? values.question_image
-                : URL.createObjectURL(
-                    values.question_image as unknown as MediaSource
-                  )
+              typeof values.image === "string"
+                ? values.image
+                : URL.createObjectURL(values.image as unknown as MediaSource)
             }
             style={{
               maxWidth: "100%",
@@ -61,10 +72,33 @@ const QuestionForm = ({
         </Box>
       )
     );
-  }, [values.question_image]);
+  }, [values.image]);
   return (
     <Box>
       <form onSubmit={handleSubmit}>
+        <FormControl>
+          <FormLabel id="type">Question Type</FormLabel>
+          <RadioGroup
+            value={values.type}
+            onChange={handleChange}
+            row
+            aria-labelledby="type"
+            name="type"
+            defaultValue="end"
+          >
+            <FormControlLabel
+              value="normal"
+              control={<Radio />}
+              label="Normal"
+              labelPlacement="end"
+            />
+            <FormControlLabel
+              value="choice"
+              control={<Radio />}
+              label="Choices"
+            />
+          </RadioGroup>
+        </FormControl>
         <Grid container spacing={gridSpacing} alignItems={"stretch"}>
           <Grid size={"grow"}>
             <FileImagePicker
@@ -75,11 +109,11 @@ const QuestionForm = ({
                 },
               }}
               onSelectImage={(files) => {
-                setFieldValue("question_image", files?.[0]);
+                setFieldValue("image", files?.[0]);
               }}
               name="question_image"
               accept="image/png,image/jpg,image/jpeg"
-              id="image_url"
+              id="image"
               onBlur={handleBlur}
               renderContent={() => {
                 return (
@@ -91,8 +125,8 @@ const QuestionForm = ({
                 );
               }}
             />
-            {touched.question_image && errors.question_image && (
-              <FormHelperText error>{errors.question_image}</FormHelperText>
+            {touched.image && errors.image && (
+              <FormHelperText error>{errors.image}</FormHelperText>
             )}
           </Grid>
           <Grid
@@ -103,25 +137,61 @@ const QuestionForm = ({
           </Grid>
         </Grid>
 
-        <FormControl
-          fullWidth
-          error={Boolean(touched.question && errors.question)}
-        >
-          <InputLabel htmlFor="name">Question</InputLabel>
+        <FormControl fullWidth error={Boolean(touched.title && errors.title)}>
+          <InputLabel htmlFor="name">Question Title</InputLabel>
           <OutlinedInput
-            id="question"
-            name="question"
-            value={values.question}
+            id="title"
+            name="title"
+            value={values.title}
             onChange={handleChange}
             onBlur={handleBlur}
             label="Question"
             type="text"
           />
-          {touched.question && errors.question && (
-            <FormHelperText error>{errors.question}</FormHelperText>
+          {touched.title && errors.title && (
+            <FormHelperText error>{errors.title}</FormHelperText>
           )}
         </FormControl>
-        <LoadingButton fullWidth type="submit" variant="outlined">
+        {values.type === "choice" && (
+          <Autocomplete
+            multiple
+            id="tags-filled"
+            options={[]}
+            defaultValue={values.choices}
+            onChange={(e, newVlaue) => {
+              setFieldValue("choices", newVlaue);
+            }}
+            freeSolo
+            renderTags={(value: readonly string[], getTagProps) => {
+              return value.map((option: string, index: number) => {
+                const { key, ...tagProps } = getTagProps({ index });
+                return (
+                  <Chip
+                    variant="outlined"
+                    label={option}
+                    key={key}
+                    {...tagProps}
+                  />
+                );
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                label="choices"
+                placeholder="body building"
+              />
+            )}
+          />
+        )}
+
+        <LoadingButton
+          fullWidth
+          type="submit"
+          variant="outlined"
+          {...loadingButtonProps}
+        >
           {task} Question
         </LoadingButton>
       </form>

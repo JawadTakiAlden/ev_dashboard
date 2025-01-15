@@ -12,7 +12,9 @@ export interface QueryResponse<T = any> {
   data: ServerResponse<T>;
 }
 
-const baseURL: string = "http://127.0.0.1:8080";
+// const baseURL: string = "http://localhost:8080";
+const baseURL: string = "https://api.evolvevw.com";
+// const baseURL: string = "http://172.16.14.171:8080";
 
 const client: AxiosInstance = axios.create({ baseURL });
 

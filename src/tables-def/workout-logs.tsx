@@ -1,14 +1,7 @@
 export interface WorkoutLog {
   id: number;
   workout_name: string;
-  type: "join" | "complete";
-  date: string;
-}
-
-export interface WorkoutLog {
-  id: number;
-  workout_name: string;
-  type: "join" | "complete";
+  type: "joined" | "complete";
   date: string;
 }
 

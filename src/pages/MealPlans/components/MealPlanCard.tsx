@@ -13,8 +13,10 @@ import {
 import MainCard from "../../../components/MainCard";
 import { FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "../../../providers/AuthProvider";
 
 const MealPlanCard = ({ plan }: { plan: MealPlan }) => {
+  const { user, base } = useAuthContext();
   return (
     <MainCard cardContent={false} border={false} sx={{ px: 0, py: 2 }}>
       <Box>
@@ -54,7 +56,7 @@ const MealPlanCard = ({ plan }: { plan: MealPlan }) => {
       />
       <CardContent>
         <Stack flexDirection={"row"} gap={1} flexWrap={"wrap"}>
-          {plan.types.map((mealType, i) => (
+          {plan?.types?.map((mealType, i) => (
             <Chip
               variant="outlined"
               key={i}
@@ -73,7 +75,7 @@ const MealPlanCard = ({ plan }: { plan: MealPlan }) => {
         >
           this plan comes with{" "}
           <span className="bolder">{plan.calories} calories</span> divided in{" "}
-          {plan.types.length} meals on the day
+          {plan?.types?.length} meals on the day
         </Typography>
         <Typography
           variant="h1"
@@ -87,10 +89,15 @@ const MealPlanCard = ({ plan }: { plan: MealPlan }) => {
           }}
           textAlign={"center"}
         >
-          {plan.price_monthly + " SR"}
-          <IconButton component={Link} to={`${plan.id}`}>
-            <FaArrowRight />
-          </IconButton>
+          {plan?.price_monthly + " SR"}
+          {user?.role === "admin" && (
+            <IconButton
+              component={Link}
+              to={`/${base}/dashboard/meal-plans/${plan.id}`}
+            >
+              <FaArrowRight />
+            </IconButton>
+          )}
         </Typography>
       </CardContent>
     </MainCard>

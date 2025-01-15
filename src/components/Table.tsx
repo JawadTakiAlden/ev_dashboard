@@ -26,7 +26,25 @@ const Table = ({
   });
 
   const handleExportRows = (rows: MRT_Row<any>[]) => {
-    const rowData = rows.map((row) => row.original);
+    const badTypes: string[] = ["function", "object"];
+    const rowData = rows.map((row) => {
+      const availableKeys = Object.keys(row.original).filter((key) => {
+        return !badTypes.includes(`${typeof row.original[key]}`);
+      });
+      type ObjectToExport = {
+        [key: string]: any;
+      };
+      const objectToExport: ObjectToExport = availableKeys.reduce(
+        (pre, cur) => {
+          return {
+            ...pre,
+            [cur]: row.original[cur],
+          };
+        },
+        {}
+      );
+      return objectToExport;
+    });
     const csv = generateCsv(csvConfig)(rowData);
     download(csvConfig)(csv);
   };
@@ -35,19 +53,18 @@ const Table = ({
     enableFullScreenToggle: false,
     enableColumnFilters: false,
     enableColumnActions: false,
+    enableDensityToggle: false,
     enableColumnOrdering: false,
     enableSorting: false,
     enableHiding: false,
     enableTopToolbar: withExport,
-    renderTopToolbar: ({ table }) => {
+    renderTopToolbarCustomActions: ({ table }) => {
       return (
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
             gap: "20px",
-            px: 2,
-            py: 1,
           }}
         >
           <Button

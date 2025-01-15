@@ -26,11 +26,11 @@ const MealCard = ({
   withExtraInfo?: boolean;
 }) => {
   const { user, base } = useAuthContext();
-  withAction = user?.role === "admin";
+  withAction = user?.role === "admin" || user?.role === "kitchen_staff";
   return (
     <MainCard
       sx={{
-        height: !withExtraInfo ? "410px" : "auto",
+        height: "auto",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -51,7 +51,7 @@ const MealCard = ({
           sx={{
             borderRadius: "12px",
           }}
-          image={meal.image_url}
+          image={meal.images[0]}
           height={180}
         />
       </Box>
@@ -70,13 +70,20 @@ const MealCard = ({
             <Typography variant="body2">carbohydrates : {meal.carb}</Typography>
             <Typography variant="body2">fats : {meal.fats}</Typography>
             <Typography variant="body2">fiber : {meal.fiber}</Typography>
-            <Stack mt={1} flexDirection={"row"} gap={1} flexWrap={"wrap"}>
-              {meal.types.map((type) => {
-                return <Chip label={type.title} />;
-              })}
-            </Stack>
           </Box>
         )}
+        <Typography mb={1}>Types : </Typography>
+        <Stack mb={1} mt={1} flexDirection={"row"} gap={1} flexWrap={"wrap"}>
+          {meal.types.map((type) => {
+            return <Chip key={type.id} label={type.title} />;
+          })}
+        </Stack>
+        <Typography mb={1}>Ingredients : </Typography>
+        <Stack mt={1} flexDirection={"row"} gap={1} flexWrap={"wrap"}>
+          {meal.ingredients.map((ingred) => {
+            return <Chip key={ingred.id} label={ingred.title} />;
+          })}
+        </Stack>
       </CardContent>
       {withAction && (
         <CardActions disableSpacing>

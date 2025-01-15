@@ -12,11 +12,8 @@ const MealTypes = () => {
         spacing={gridSpacing}
         flexDirection={{ xs: "row-reverse", sm: "row" }}
       >
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={12}>
           <MealType />
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <MealIngrediant />
         </Grid>
       </Grid>
     </Box>

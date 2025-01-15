@@ -5,12 +5,17 @@ import { gridSpacing } from "../../config";
 import DeleteTypography from "../../components/DeleteTypography";
 import MealPlanForm from "./components/MealPlanForm";
 import DoupleClickToConfirm from "../../components/DoupleClickToConfirm";
-import { useDeleteMealPlan, useShowMealPlan } from "../../api/mealPlan";
+import {
+  useDeleteMealPlan,
+  useShowMealPlan,
+  useUpdateMealPlan,
+} from "../../api/mealPlan";
 import LoadingDataError from "../../components/LoadingDataError";
 
 const MealPlanDetail = () => {
   const deleteMealPlan = useDeleteMealPlan();
   const meal = useShowMealPlan();
+  const updateMealPlan = useUpdateMealPlan();
 
   if (meal.isLoading) {
     return <Typography>Loading ...</Typography>;
@@ -35,7 +40,13 @@ const MealPlanDetail = () => {
           <MealPlanForm
             task="update"
             onSubmit={(values) => {
-              console.log(values);
+              updateMealPlan.mutate({
+                ...values,
+                types: values.types.map((type) => type.id),
+              });
+            }}
+            loadingButtonProps={{
+              loading: updateMealPlan.isPending,
             }}
             initialValues={meal.data?.data!}
           />

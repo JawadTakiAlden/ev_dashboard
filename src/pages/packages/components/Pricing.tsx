@@ -2,7 +2,6 @@ import { alpha, Box } from "@mui/material";
 import PricingForm from "./PricingForm";
 import Grid from "@mui/material/Grid2";
 import { gridSpacing } from "../../../config";
-import Table from "../../../components/Table";
 import {
   Pricing as PriceModel,
   pricingColumns,
@@ -10,6 +9,10 @@ import {
 import DeleteTypography from "../../../components/DeleteTypography";
 import { useCreatePrice } from "../../../api/packages";
 import { useParams } from "react-router";
+import Loadable from "../../../components/Loadable";
+import { lazy } from "react";
+
+const Table = Loadable(lazy(() => import("../../../components/Table")));
 
 const Pricing = ({
   withActions = true,

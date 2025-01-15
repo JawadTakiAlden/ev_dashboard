@@ -1,7 +1,7 @@
 import { Stack } from "@mui/material";
 import { MRT_ColumnDef } from "material-react-table";
-// import DeletePriceButton from "../pages/packages/components/DeletePriceButton";
 import UpdatePriceButton from "../pages/packages/components/UpdatePriceButton";
+import DeletePriceButton from "../pages/packages/components/DeletePriceButton";
 
 export interface Pricing {
   id: number;
@@ -31,7 +31,7 @@ export const pricingColumns = (withActions = true) => {
       Cell: ({ cell }) => `SAR${cell.getValue<number>().toFixed(2)}`,
     },
     {
-      accessorKey: "numberOfDays",
+      accessorKey: "number_of_days",
       header: "Number of Days",
     },
   ];
@@ -45,6 +45,7 @@ export const pricingColumns = (withActions = true) => {
         Cell: ({ row }) => (
           <Stack flexDirection={"row"} gap={1}>
             <UpdatePriceButton price={row.original} />
+            <DeletePriceButton price={row.original} />
           </Stack>
         ),
       },
@@ -53,103 +54,3 @@ export const pricingColumns = (withActions = true) => {
 
   return pricingColumns;
 };
-
-export const pricings: Pricing[] = [
-  {
-    id: 1,
-    title: "Monthly Plan",
-    price: 49.99,
-    numberOfDays: 30,
-    packageId: 1,
-  },
-  {
-    id: 2,
-    title: "Quarterly Plan",
-    price: 139.99,
-    numberOfDays: 90,
-    packageId: 1,
-  },
-  {
-    id: 3,
-    title: "Monthly Plan",
-    price: 69.99,
-    numberOfDays: 30,
-    packageId: 2,
-  },
-  {
-    id: 4,
-    title: "Annual Plan",
-    price: 749.99,
-    numberOfDays: 365,
-    packageId: 2,
-  },
-  {
-    id: 5,
-    title: "Weekly Plan",
-    price: 19.99,
-    numberOfDays: 7,
-    packageId: 3,
-  },
-];
-
-export const packages: Package[] = [
-  {
-    id: 1,
-    name: "Gold Package",
-    description: "Premium package for group coaching",
-    type: "group",
-    pricings: [
-      {
-        id: 1,
-        title: "Monthly Plan",
-        price: 49.99,
-        numberOfDays: 30,
-        packageId: 1,
-      },
-      {
-        id: 2,
-        title: "Quarterly Plan",
-        price: 139.99,
-        numberOfDays: 90,
-        packageId: 1,
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Silver Package",
-    description: "Basic package for personalized coaching",
-    type: "personalized",
-    pricings: [
-      {
-        id: 3,
-        title: "Monthly Plan",
-        price: 69.99,
-        numberOfDays: 30,
-        packageId: 2,
-      },
-      {
-        id: 4,
-        title: "Annual Plan",
-        price: 749.99,
-        numberOfDays: 365,
-        packageId: 2,
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: "Bronze Package",
-    description: "Entry-level package for group coaching",
-    type: "group",
-    pricings: [
-      {
-        id: 5,
-        title: "Weekly Plan",
-        price: 19.99,
-        numberOfDays: 7,
-        packageId: 3,
-      },
-    ],
-  },
-];

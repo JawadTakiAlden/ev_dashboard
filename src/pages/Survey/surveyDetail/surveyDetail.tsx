@@ -1,6 +1,4 @@
-import React from "react";
-import { surveyDetail } from "../../../tables-def/survey";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Skeleton, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { gridSpacing } from "../../../config";
 import UnderlineHeader from "../../../components/UnderlineHeader";
@@ -8,13 +6,43 @@ import DeleteTypography from "../../../components/DeleteTypography";
 import DoupleClickToConfirm from "../../../components/DoupleClickToConfirm";
 import SurveyForm from "../components/SurveyForm";
 import SurveyQuestions from "../../surveyQuestions";
+import {
+  useDeleteSurvey,
+  useShowSurvey,
+  useUpdateSurvey,
+} from "../../../api/surveys";
+import { useParams } from "react-router";
+import LoadingDataError from "../../../components/LoadingDataError";
 
 const SurveyDetail = ({ withActions = true }: { withActions?: boolean }) => {
+  const survey = useShowSurvey();
+  const deleteSurvey = useDeleteSurvey(true);
+  const { surveyId } = useParams();
+  const updateSurvey = useUpdateSurvey();
+
+  if (survey.isLoading) {
+    return (
+      <>
+        <Skeleton width={100} variant="text" sx={{ mb: 2 }} />
+        <Skeleton width={"100%"} height={200} variant="text" sx={{ mb: 2 }} />
+        <Skeleton width={"30%"} variant="text" sx={{ mb: 2 }} />
+        <Skeleton width={"70%"} variant="text" sx={{ mb: 2 }} />
+        <Skeleton component={Button} variant="text" sx={{ mb: 2 }} />
+      </>
+    );
+  }
+
+  if (survey.isError) {
+    return <LoadingDataError refetch={survey.refetch} />;
+  }
+
+  const surveyData = survey.data?.data[0];
+
   return (
     <Box>
       <Grid container spacing={gridSpacing}>
         <Grid size={12}>
-          <UnderlineHeader>{surveyDetail.title}</UnderlineHeader>
+          <UnderlineHeader>{surveyData?.title}</UnderlineHeader>
         </Grid>
         {withActions && (
           <Grid size={12}>
@@ -23,12 +51,12 @@ const SurveyDetail = ({ withActions = true }: { withActions?: boolean }) => {
             </DeleteTypography>
             <SurveyForm
               task="update"
-              initialValues={{
-                title: surveyDetail.title,
-                package_id: surveyDetail.package_id,
+              initialValues={surveyData!}
+              loadingButtonProps={{
+                loading: updateSurvey.isPending,
               }}
               onSubmit={(values) => {
-                console.log(values);
+                updateSurvey.mutate({ title: values.title });
               }}
             />
           </Grid>
@@ -40,7 +68,7 @@ const SurveyDetail = ({ withActions = true }: { withActions?: boolean }) => {
           </DeleteTypography>
           <SurveyQuestions
             withActions={withActions}
-            questions={surveyDetail.questions}
+            questions={surveyData?.questions}
           />
         </Grid>
         {withActions && (
@@ -55,7 +83,7 @@ const SurveyDetail = ({ withActions = true }: { withActions?: boolean }) => {
             <DoupleClickToConfirm
               color={"error"}
               onClick={() => {
-                console.log("delete");
+                deleteSurvey.mutate(parseInt(surveyId!));
               }}
             >
               Delete

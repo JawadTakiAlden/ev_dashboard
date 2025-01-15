@@ -1,3 +1,5 @@
+import { MealPlan } from "./meal-plans";
+import { Meal } from "./meals";
 import { WorkoutLog } from "./workout-logs";
 
 export interface UserProfileModel {
@@ -6,8 +8,11 @@ export interface UserProfileModel {
   email: string;
   phone: string;
   role: string;
+  is_blocked: boolean;
   gender: string | null;
-  sport: string | null;
+  sport: {
+    title: string;
+  };
   goal: string | null;
   training_location: string | null;
   sport_duration: string | null;
@@ -26,7 +31,7 @@ export interface UserProfileModel {
   workout_attendances: WorkoutAttendance[];
   workouts_completed: WorkoutCompleted[];
   exercises_completed: ExerciseCompleted[];
-  weight_record: WeightRecord[];
+  ["weight-record"]: WeightRecord[];
 }
 
 export interface FitnessSubscription {
@@ -40,13 +45,39 @@ export interface FitnessSubscription {
   is_active: boolean;
   createdAt: string;
   updatedAt: string;
+  package: {
+    id: number;
+    name: string;
+  };
+  pricing: {
+    title: string;
+  };
 }
 
-interface SurveyAnswer {
-  // Define fields if applicable or leave as empty interface if unknown
+export interface SurveyAnswer {
+  id: number;
+  answer: string;
+  createdAt: string;
+  updatedAt: string;
+  question: {
+    id: number;
+    title: string;
+    image: string;
+    type: string;
+    survey_id: number;
+    createdAt: string;
+    updatedAt: string;
+  };
+  choice: {
+    id: number;
+    text: string;
+    question_id: number;
+    createdAt: string;
+    updatedAt: string;
+  };
 }
 
-interface MealSelection {
+export interface MealSelection {
   id: number;
   user_id: number;
   meal_id: number;
@@ -54,9 +85,10 @@ interface MealSelection {
   meal_subscription_id: number;
   createdAt: string;
   updatedAt: string;
+  meal: Meal;
 }
 
-interface DietSubscription {
+export interface DietSubscription {
   id: number;
   type: string;
   meal_plan_id: number;
@@ -68,9 +100,32 @@ interface DietSubscription {
   address_id: number;
   createdAt: string;
   updatedAt: string;
+  meal_plan: MealPlan;
+  address: Address;
+  delivery_time: DeliveryTime;
 }
 
-interface WorkoutAttendance {
+export interface DeliveryTime {
+  id: number;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Address {
+  id: number;
+  street: string;
+  city: string;
+  address_label: string | null;
+  building: string;
+  postal_code: string;
+  state: string;
+  delivery_notes: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WorkoutAttendance {
   id: number;
   user_id: number;
   workout_id: number;
@@ -78,7 +133,7 @@ interface WorkoutAttendance {
   updatedAt: string;
 }
 
-interface WorkoutCompleted {
+export interface WorkoutCompleted {
   id: number;
   user_id: number;
   workout_id: number;
@@ -87,7 +142,7 @@ interface WorkoutCompleted {
   workout: WorkoutDetails;
 }
 
-interface WorkoutDetails {
+export interface WorkoutDetails {
   id: number;
   title: string;
   type: string;
@@ -102,7 +157,7 @@ interface WorkoutDetails {
   updatedAt: string;
 }
 
-interface ExerciseCompleted {
+export interface ExerciseCompleted {
   id: number;
   user_id: number;
   exercise_id: number;
@@ -110,15 +165,16 @@ interface ExerciseCompleted {
   updatedAt: string;
 }
 
-interface WeightRecord {
+export interface WeightRecord {
   id: number;
   user_id: number;
   weight: number;
+  date: string;
   createdAt: string;
   updatedAt: string;
 }
 
-interface WieghtProgress {
+export interface WieghtProgress {
   date: string;
   value: number;
 }
@@ -140,41 +196,4 @@ export const getProgressHistoryChartData = ({
   };
 
   return data;
-};
-
-export const userProfile: UserProfileModel = {
-  id: 1,
-  name: "John Doe",
-  email: "john.doe@example.com",
-  birth_of_date: "1990-05-15",
-  created_at: "2023-01-10",
-  subscription: {
-    name: "Premium",
-    start_date: "2023-01-01",
-    end_date: "2024-01-01",
-  },
-  progress_history: [
-    { date: "2023-02-01", value: 78 },
-    { date: "2023-03-01", value: 76 },
-    { date: "2023-04-01", value: 75 },
-    { date: "2023-05-01", value: 74 },
-  ],
-  workout_logs: [
-    { id: 101, workout_name: "Yoga Session", type: "join", date: "2023-03-05" },
-    {
-      id: 102,
-      workout_name: "Strength Training",
-      type: "complete",
-      date: "2023-03-06",
-    },
-    { id: 103, workout_name: "Cardio Blast", type: "join", date: "2023-03-10" },
-    {
-      id: 104,
-      workout_name: "HIIT Workout",
-      type: "complete",
-      date: "2023-03-11",
-    },
-    { id: 105, workout_name: "Pilates", type: "join", date: "2023-03-15" },
-    { id: 106, workout_name: "Cycling", type: "complete", date: "2023-03-16" },
-  ],
 };

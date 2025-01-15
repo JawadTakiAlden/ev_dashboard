@@ -4,7 +4,7 @@ import { gridSpacing } from "../../../config";
 import MainCard from "../../../components/MainCard";
 import ReactPlayer from "react-player";
 import Grid from "@mui/material/Grid2";
-import { Exercise, exercises } from "../../../tables-def/excercise";
+import { Exercise } from "../../../tables-def/excercise";
 
 const DetailPanel = ({ exercise }: { exercise: Exercise }) => {
   return (
@@ -45,16 +45,20 @@ const DetailPanel = ({ exercise }: { exercise: Exercise }) => {
             <Grid size={{ xs: 12, md: 6 }}>
               <MainCard sx={{ width: "100%", p: 0 }} cardContent={false}>
                 <CardHeader title={"Exercise Image"} />
-                <CardMedia
-                  component={"img"}
-                  height={"auto"}
-                  sx={{
-                    maxHeight: "300px",
-                    objectFit: "contain",
-                  }}
-                  alt={exercise.name}
-                  image={exercise.image_url}
-                />
+                <Stack flexDirection={"row"} alignItems={"center"} gap={1}>
+                  {exercise.image_urls?.map((image) => (
+                    <CardMedia
+                      component={"img"}
+                      height={"auto"}
+                      sx={{
+                        maxHeight: "300px",
+                        objectFit: "contain",
+                      }}
+                      alt={exercise.name}
+                      image={image}
+                    />
+                  ))}
+                </Stack>
               </MainCard>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>

@@ -9,6 +9,9 @@ import { CgHome } from "react-icons/cg";
 import { IoSettings } from "react-icons/io5";
 import WorkOutDetailPage from "./workoutDetail";
 import SettingsPannel from "./SettingsPannel";
+import { useShowWorkout } from "../../../api/workout";
+import { Typography } from "@mui/material";
+import LoadingDataError from "../../../components/LoadingDataError";
 
 const MainWorkoutDetail = ({ withAction = true }: { withAction?: boolean }) => {
   const [value, setValue] = React.useState("1");
@@ -16,6 +19,16 @@ const MainWorkoutDetail = ({ withAction = true }: { withAction?: boolean }) => {
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
+
+  const workoutDetail = useShowWorkout();
+
+  if (workoutDetail.isLoading) {
+    return <Typography>Loading ...</Typography>;
+  }
+
+  if (workoutDetail.isError) {
+    return <LoadingDataError refetch={workoutDetail.refetch} />;
+  }
 
   return (
     <>
@@ -40,11 +53,14 @@ const MainWorkoutDetail = ({ withAction = true }: { withAction?: boolean }) => {
             </TabList>
           </Box>
           <TabPanel value="1" sx={{ px: 0 }}>
-            <WorkOutDetailPage withAction={withAction} />
+            <WorkOutDetailPage
+              withAction={withAction}
+              workout={workoutDetail.data?.data.workout}
+            />
           </TabPanel>
           {withAction && (
             <TabPanel value="2" sx={{ px: 0 }}>
-              <SettingsPannel />
+              <SettingsPannel workout={workoutDetail.data?.data.workout} />
             </TabPanel>
           )}
         </TabContext>

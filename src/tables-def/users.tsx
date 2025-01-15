@@ -1,5 +1,12 @@
 import { MRT_ColumnDef } from "material-react-table";
 
+const roleMapper: { [key: string]: string } = {
+  admin: "Admin",
+  coach: "Coach",
+  kitchen_staff: "Kitchen",
+  consumer: "Consumer",
+};
+
 export interface UserModel {
   id: number;
 
@@ -8,6 +15,8 @@ export interface UserModel {
   email: string;
 
   phone: string;
+
+  role: string;
 }
 
 export const userTableColumns: MRT_ColumnDef<UserModel, any>[] = [
@@ -29,6 +38,11 @@ export const userTableColumns: MRT_ColumnDef<UserModel, any>[] = [
   {
     accessorKey: "email",
     header: "Email",
+    maxSize: 250,
+  },
+  {
+    accessorFn: (row) => roleMapper[row.role],
+    header: "Type",
     maxSize: 250,
   },
 ];

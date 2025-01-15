@@ -10,6 +10,7 @@ import { FormikConfig, useFormik } from "formik";
 import React from "react";
 import { gridSpacing } from "../../../config";
 import { LoadingButton } from "@mui/lab";
+import { FormLoadingButtonProps } from "../../../tables-def/loadingButtonProps";
 
 interface SurveyFormProps {
   task?: "create" | "update";
@@ -18,14 +19,17 @@ interface SurveyFormProps {
 
 export interface SurveyFormValue {
   title: string;
-  package_id: number;
+  package_id?: number;
 }
 
 const SurveyForm = ({
   task = "create",
   dir = "row",
+  loadingButtonProps,
   ...formikConfig
-}: FormikConfig<SurveyFormValue> & SurveyFormProps) => {
+}: FormikConfig<SurveyFormValue> &
+  SurveyFormProps &
+  FormLoadingButtonProps) => {
   const {
     values,
     touched,
@@ -62,6 +66,7 @@ const SurveyForm = ({
             disabled={!isValid}
             variant="outlined"
             type={"submit"}
+            {...loadingButtonProps}
           >
             {task}
           </LoadingButton>

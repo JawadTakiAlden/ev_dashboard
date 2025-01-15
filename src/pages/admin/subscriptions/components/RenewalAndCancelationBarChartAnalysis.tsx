@@ -20,29 +20,12 @@ export interface RenewalAndCancelationAnalysisProps {
     | [number, (number | null)[]][]
     | number[][];
 
-  cacelationData:
-    | (number | null)[]
-    | {
-        x: any;
-        y: any;
-        fill?: ApexFill;
-        fillColor?: string;
-        strokeColor?: string;
-        meta?: any;
-        goals?: any;
-        barHeightOffset?: number;
-        columnWidthOffset?: number;
-      }[]
-    | [number, number | null][]
-    | [number, (number | null)[]][]
-    | number[][];
-
   categories?: any[];
+  isLoading?: boolean;
 }
 
 const RenewalAndCancelationBarChartAnalysis = ({
   renewalData,
-  cacelationData,
 }: RenewalAndCancelationAnalysisProps) => {
   const theme = useTheme();
   return (
@@ -53,12 +36,6 @@ const RenewalAndCancelationBarChartAnalysis = ({
           name: "renwal",
           color: theme.palette.secondary.dark,
           data: renewalData,
-        },
-        {
-          name: "cancelation",
-          color: theme.palette.primary.main,
-
-          data: cacelationData,
         },
       ]}
       options={{

@@ -1,7 +1,9 @@
-import React from "react";
-import Table from "../../../../components/Table";
+import React, { lazy } from "react";
 import { subscriptionsColumns } from "../../../../tables-def/subscription";
 import { useGetFitnessSubscription } from "../../../../api/subscriptions";
+import Loadable from "../../../../components/Loadable";
+
+const Table = Loadable(lazy(() => import("../../../../components/Table")));
 
 const FitnessSubscriptionTable = () => {
   const subscriptions = useGetFitnessSubscription();

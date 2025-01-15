@@ -5,7 +5,7 @@ import { useTheme } from "@mui/material";
 
 const RenewalAndCancelationLineChartAnalysis = ({
   renewalData,
-  cacelationData,
+  isLoading = false,
   categories,
 }: RenewalAndCancelationAnalysisProps) => {
   const theme = useTheme();
@@ -16,10 +16,6 @@ const RenewalAndCancelationLineChartAnalysis = ({
           name: "renewal",
           data: renewalData,
         },
-        {
-          name: "cancelation",
-          data: cacelationData,
-        },
       ]}
       options={{
         fill: {
@@ -27,6 +23,18 @@ const RenewalAndCancelationLineChartAnalysis = ({
           gradient: {
             opacityFrom: 0.3,
             opacityTo: 0.8,
+          },
+        },
+        noData: {
+          text: isLoading ? "Loading..." : "No Data present in the graph!",
+          align: "center",
+          verticalAlign: "middle",
+          offsetX: 0,
+          offsetY: 0,
+          style: {
+            color: "#000000",
+            fontSize: "14px",
+            fontFamily: "Helvetica",
           },
         },
         legend: {

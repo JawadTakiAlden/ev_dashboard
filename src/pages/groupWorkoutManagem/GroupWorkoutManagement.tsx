@@ -1,14 +1,35 @@
-import { alpha, Box, Stack } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { gridSpacing } from "../../config";
 import Grid from "@mui/material/Grid2";
-import { Package, packages } from "../../tables-def/packages";
+import { Package } from "../../tables-def/packages";
 import MiniPackageCard from "./MiniPackageCard";
 import WorkoutManagement from "../../components/WorkoutManagement/WorkoutManagement";
-import { workouts } from "../../tables-def/workout";
 import { useState } from "react";
+import {
+  useGetPackages,
+  useGetWorkoutOfPackageAndDay,
+} from "../../api/packages";
+import LoadingDataError from "../../components/LoadingDataError";
+import { useSearchParams } from "react-router-dom";
 
 const GroupWorkoutManagement = () => {
   const [selectedPackage, setSelectedPackage] = useState<null | Package>(null);
+  const packagesQuery = useGetPackages();
+  const [searchParams] = useSearchParams();
+  const workoutsQuery = useGetWorkoutOfPackageAndDay(
+    selectedPackage?.id,
+    searchParams.get("day")!
+  );
+
+  if (packagesQuery.isLoading) {
+    return <Typography>Loading ...</Typography>;
+  }
+
+  if (packagesQuery.isError) {
+    return <LoadingDataError refetch={packagesQuery.refetch} />;
+  }
+
+  const packages = packagesQuery?.data?.data;
 
   return (
     <Box>
@@ -27,7 +48,7 @@ const GroupWorkoutManagement = () => {
               alignItems={"flex-start"}
               sx={{ minwidth: "800px" }}
             >
-              {packages.map((pac, i) => (
+              {packages?.map((pac, i) => (
                 <Box
                   key={i}
                   className={
@@ -35,14 +56,13 @@ const GroupWorkoutManagement = () => {
                   }
                   sx={{
                     "&.package-selected": {
-                      p: 0.3,
+                      borderTop: (theme) =>
+                        `3px solid ${theme.palette.primary.main}`,
                     },
                     flexShrink: 0,
-                    backgroundColor: (theme) =>
-                      alpha(theme.palette.primary.main, 0.3),
                     borderRadius: "10px",
                     overflow: "hidden",
-                    transition: "0.3s",
+                    width: "200px",
                   }}
                 >
                   <Box
@@ -58,16 +78,19 @@ const GroupWorkoutManagement = () => {
           </Box>
         </Grid>
         <Grid size={12}>
-          <WorkoutManagement
-            type="group"
-            targetPackage={{
-              id: selectedPackage?.id!,
-              name: selectedPackage?.name!,
-            }}
-            data={{
-              Saturday: [workouts[0], workouts[1]],
-            }}
-          />
+          {workoutsQuery.isError ? (
+            <LoadingDataError refetch={workoutsQuery.refetch} />
+          ) : (
+            <WorkoutManagement
+              isLoading={workoutsQuery.isLoading || workoutsQuery.isRefetching}
+              type="group"
+              targetPackage={{
+                id: selectedPackage?.id!,
+                name: selectedPackage?.name!,
+              }}
+              data={workoutsQuery.data?.data?.[0] || {}}
+            />
+          )}
         </Grid>
       </Grid>
     </Box>

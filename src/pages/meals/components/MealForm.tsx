@@ -8,6 +8,7 @@ import {
   FormHelperText,
   InputLabel,
   OutlinedInput,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -18,6 +19,8 @@ import useGetTypes from "../../../api/type/useGetTypes";
 import { MealType } from "../../../tables-def/meal-types";
 import { FormLoadingButtonProps } from "../../../tables-def/loadingButtonProps";
 import FileImagePicker from "../../../components/FileImagePicker";
+import { MealIngreadiant } from "../../../tables-def/meal-ingrediant";
+import { useGetIngredients } from "../../../api/ingredients";
 
 // Updated Validation Schema
 export const mealValidationSchema = Yup.object().shape({
@@ -50,8 +53,9 @@ interface MealFormValues {
   carb: number;
   fats: number;
   fiber: number;
-  // image_url: null | string | File;
+  images: string[] | File[];
   types: MealType[];
+  ingredients: MealIngreadiant[];
 }
 
 interface ExerciseFormProps {
@@ -77,30 +81,38 @@ const MealForm = ({
     ...formikProps,
   });
 
-  // const memoziedimage_url = useMemo(() => {
-  //   return (
-  //     values.image_url && (
-  //       <img
-  //         src={
-  //           typeof values.image_url === "string"
-  //             ? values.image_url
-  //             : URL.createObjectURL(values.image_url as unknown as MediaSource)
-  //         }
-  //         alt="meal"
-  //         style={{
-  //           width: "150px",
-  //           height: "100%",
-  //           borderRadius: "6px",
-  //           maxHeight: "150px",
-  //           objectFit: "contain",
-  //           maxWidth: "100%",
-  //         }}
-  //       />
-  //     )
-  //   );
-  // }, [values.image_url]);
+  const mealImages = useMemo(() => {
+    return (
+      values.images?.length > 0 && (
+        <Stack flexDirection={"row"} gap={0.5} alignItems={"center"}>
+          {values.images?.map((image, i) => {
+            return (
+              <img
+                key={i}
+                src={
+                  typeof image === "string"
+                    ? image
+                    : URL.createObjectURL(image as unknown as MediaSource)
+                }
+                alt="exercise "
+                style={{
+                  width: "150px",
+                  height: "100%",
+                  borderRadius: "6px",
+                  maxHeight: "150px",
+                  objectFit: "contain",
+                  maxWidth: "100%",
+                }}
+              />
+            );
+          })}
+        </Stack>
+      )
+    );
+  }, [values.images.length]);
 
   const mealTypes = useGetTypes();
+  const mealIngredients = useGetIngredients();
 
   return (
     <Box>
@@ -231,7 +243,6 @@ const MealForm = ({
               getOptionLabel={(option) => option.title}
               onChange={(e, newVlaue) => {
                 setFieldValue("types", newVlaue);
-                console.log(newVlaue);
               }}
               value={values.types}
               loading={mealTypes.isLoading}
@@ -247,17 +258,45 @@ const MealForm = ({
             />
             {/* </FormControl> */}
           </Grid>
-          {/* <Grid size={12}>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            {/* <FormControl error={!!touched.type && !!errors.type}> */}
+            <Autocomplete
+              multiple
+              id="ingredients"
+              disableCloseOnSelect
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              getOptionLabel={(option) => option.title}
+              onChange={(e, newVlaue) => {
+                setFieldValue("ingredients", newVlaue);
+              }}
+              value={values.ingredients}
+              loading={mealIngredients.isLoading}
+              getOptionKey={(option) => option.id}
+              options={mealIngredients?.data?.data || []}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Meal Ingredient"
+                  placeholder="meal ingredient"
+                />
+              )}
+            />
+            {/* </FormControl> */}
+          </Grid>
+          <Grid size={12}>
+            <Grid size={12}>{mealImages}</Grid>
             <Grid container columnSpacing={gridSpacing}>
               <Grid size={"grow"}>
                 <FileImagePicker
-                  title="Exercise image_url"
+                  title="Meal Image"
                   onSelectImage={(files) => {
-                    setFieldValue("image_url", files?.[0]);
+                    if (files !== null && files.length > 0) {
+                      setFieldValue("images", [...values.images, files?.[0]]);
+                    }
                   }}
-                  name="image_url"
-                  accept="image_url/png,image_url/jpg,image_url/jpeg"
-                  id="image_url"
+                  name="images"
+                  accept="images/png,image_url/jpg,image_url/jpeg"
+                  id="images"
                   onBlur={handleBlur}
                   renderContent={() => {
                     return (
@@ -270,9 +309,8 @@ const MealForm = ({
                   }}
                 />
               </Grid>
-              <Grid size="auto">{memoziedimage_url}</Grid>
             </Grid>
-          </Grid> */}
+          </Grid>
           <Grid size={12}>
             <LoadingButton
               sx={{ my: 1, width: { xs: "100%", sm: "initial" } }}
